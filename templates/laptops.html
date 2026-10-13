@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6">
+                💻 Kho dữ liệu thực tế
+            </span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+                225 model đã làm sạch & chuẩn hóa
+            </span>
+        </div>
+        <h2 class="text-primary fw-bold">Danh sách laptop – Thông số kỹ thuật & Giá bán</h2>
+        <p class="text-muted fs-6 mb-0">
+            Tra cứu cấu hình phần cứng, điểm benchmark CPU/GPU PassMark chính thức và giá thị trường của <strong>{{ laptops|length }} mẫu laptop thực tế</strong> tại Việt Nam.
+        </p>
+    </div>
+</div>
+
+<!-- BỘ LỌC NHANH THEO NHU CẦU SINH VIÊN -->
+<div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body p-3">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="fw-bold text-dark small me-1">⚡ Lọc nhanh theo nhu cầu:</span>
+            <button type="button" class="btn btn-sm btn-primary filter-pill active" data-filter="all">
+                Tất cả ({{ laptops|length }})
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="budget">
+                💰 Học tập giá mềm (&le; 20 triệu)
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="light">
+                🪶 Siêu mỏng nhẹ (&le; 1.5 kg)
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="gaming">
+                🔥 Đồ họa & Gaming (GPU rời)
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="ram16">
+                💾 Đa nhiệm mượt (RAM &ge; 16GB)
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="apple">
+                🍎 Apple MacBook
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive shadow-sm rounded bg-white p-3 mb-5">
+    <table id="laptopsTable" class="table table-hover table-striped align-middle mb-0 w-100">
+        <thead class="table-dark">
+            <tr>
+                <th>Tên laptop</th>
+                <th>Thương hiệu</th>
+                <th>Bộ xử lý CPU</th>
+                <th>Điểm hiệu năng CPU</th>
+                <th>Card đồ họa GPU</th>
+                <th>Điểm hiệu năng GPU</th>
+                <th>Bộ nhớ RAM</th>
+                <th>Dung lượng lưu trữ</th>
+                <th>Kích thước màn hình</th>
+                <th>Tần số quét</th>
+                <th>Trọng lượng</th>
+                <th>Dung lượng pin</th>
+                <th>Điểm đánh giá</th>
+                <th>Giá bán</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for laptop in laptops %}
+            <tr data-price="{{ laptop.price }}" 
+                data-weight="{{ laptop.weight }}" 
+                data-gpu-score="{{ laptop.gpu_score }}" 
+                data-ram="{{ laptop.ram }}" 
+                data-brand="{{ laptop.brand }}">
+                <td class="fw-bold">{{ laptop.name }}</td>
+                <td><span class="badge bg-secondary">{{ laptop.brand }}</span></td>
+                <td>{{ laptop.cpu }}</td>
+                <td><span class="badge bg-light text-dark border">{{ "{:,}".format(laptop.cpu_score) }}</span></td>
+                <td>{{ laptop.gpu }}</td>
+                <td><span class="badge bg-light text-dark border">{{ "{:,}".format(laptop.gpu_score) }}</span></td>
+                <td>{{ laptop.ram }} GB</td>
+                <td>{{ laptop.storage }} GB</td>
+                <td>{{ laptop.screen_size }}" {% if laptop.resolution %}<small class="text-muted d-block">{{ laptop.resolution }}</small>{% endif %}</td>
+                <td>{{ laptop.refresh_rate }} Hz</td>
+                <td>{{ laptop.weight }} kg</td>
+                <td>{{ laptop.battery }} Wh</td>
+                <td>⭐ {{ laptop.rating }}</td>
+                <td class="text-success fw-bold text-nowrap">{{ "{:,.0f}".format(laptop.price) }} đ</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- DataTables Scripts -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var currentFilter = 'all';
+
+        // Đăng ký custom filter cho DataTables
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                if (currentFilter === 'all') return true;
+                
+                var rowNode = settings.aoData[dataIndex].nTr;
+                if (!rowNode) return true;
+
+                var price = parseFloat($(rowNode).attr('data-price')) || 0;
+                var weight = parseFloat($(rowNode).attr('data-weight')) || 0;
+                var gpuScore = parseFloat($(rowNode).attr('data-gpu-score')) || 0;
+                var ram = parseFloat($(rowNode).attr('data-ram')) || 0;
+                var brand = ($(rowNode).attr('data-brand') || '').toLowerCase();
+
+                if (currentFilter === 'budget') {
+                    return price <= 20000000;
+                } else if (currentFilter === 'light') {
+                    return weight <= 1.5;
+                } else if (currentFilter === 'gaming') {
+                    return gpuScore >= 7000;
+                } else if (currentFilter === 'ram16') {
+                    return ram >= 16;
+                } else if (currentFilter === 'apple') {
+                    return brand === 'apple';
+                }
+                return true;
+            }
+        );
+
+        var table = $('#laptopsTable').DataTable({
+            "pageLength": 15,
+            "lengthMenu": [10, 15, 25, 50, 100],
+            "language": {
+                "search": "🔍 Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ laptop / trang",
+                "paginate": {
+                    "next": "Trang sau",
+                    "previous": "Trang trước"
+                },
+                "info": "Đang hiển thị _START_ đến _END_ của tổng số _TOTAL_ laptop",
+                "infoEmpty": "Không tìm thấy dữ liệu",
+                "zeroRecords": "Không có laptop nào phù hợp"
+            }
+        });
+
+        // Xử lý sự kiện click filter pills
+        $('.filter-pill').on('click', function() {
+            $('.filter-pill').removeClass('btn-primary active').addClass('btn-outline-secondary bg-white');
+            $(this).removeClass('btn-outline-secondary bg-white').addClass('btn-primary active');
+            currentFilter = $(this).data('filter');
+            table.draw();
+        });
+    });
+</script>
+{% endblock %}
+

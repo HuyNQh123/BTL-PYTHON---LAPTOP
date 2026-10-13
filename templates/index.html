@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="p-5 mb-5 bg-light rounded-3 shadow-sm border">
+    <div class="container-fluid py-4 text-center">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6 mb-3">
+            📚 Phần 1: Quản lý Dữ liệu & Khởi tạo Máy chủ Web
+        </span>
+        <h1 class="display-5 fw-bold text-primary mb-3">Hệ thống Quản lý & Khám phá Dữ liệu Laptop</h1>
+        <p class="col-md-9 mx-auto fs-5 text-muted">
+            Thu thập, làm sạch và tra cứu dữ liệu thực tế của 225 mẫu laptop từ các thương hiệu phổ biến trên thị trường Việt Nam (ASUS, Apple, Dell, HP, Lenovo, Acer, MSI...).
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+            <a href="/laptops" class="btn btn-primary btn-lg shadow-sm px-4">📋 Khám phá kho dữ liệu laptop</a>
+        </div>
+    </div>
+</div>
+
+<!-- Key Statistics Overview -->
+<div class="row text-center mb-5 g-3">
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100 border-0 bg-primary text-white">
+            <div class="card-body py-4">
+                <h6 class="text-white-50 text-uppercase">Tổng số laptop</h6>
+                <h2 class="card-text fw-bold">{{ total_laptops }}</h2>
+                <small class="text-white-50">Mẫu laptop thực tế trên thị trường</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100 border-0 bg-success text-white">
+            <div class="card-body py-4">
+                <h6 class="text-white-50 text-uppercase">Số thương hiệu</h6>
+                <h2 class="card-text fw-bold">{{ total_brands }}</h2>
+                <small class="text-white-50">Hãng sản xuất hàng đầu</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100 border-0 bg-info text-white">
+            <div class="card-body py-4">
+                <h6 class="text-white-50 text-uppercase">Giá trung bình</h6>
+                <h2 class="card-text fw-bold">{{ "{:,.0f}".format(avg_price) }} đ</h2>
+                <small class="text-white-50">Giá bán trung bình (VND)</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card shadow-sm h-100 border-0 bg-dark text-white">
+            <div class="card-body py-4">
+                <h6 class="text-white-50 text-uppercase">Giá cao nhất</h6>
+                <h2 class="card-text fw-bold">{{ "{:,.0f}".format(max_price) }} đ</h2>
+                <small class="text-white-50">Mức giá cao nhất (VND)</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tính năng nổi bật -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 bg-white">
+            <div class="d-flex align-items-center mb-3">
+                <span class="fs-2 me-3">🔍</span>
+                <h5 class="fw-bold mb-0">Tìm kiếm & Phân trang</h5>
+            </div>
+            <p class="text-muted small mb-0">
+                Tích hợp DataTables tương tác cao, lọc tìm kiếm thời gian thực theo tên model, hãng sản xuất, chip CPU hoặc card đồ họa.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 bg-white">
+            <div class="d-flex align-items-center mb-3">
+                <span class="fs-2 me-3">⚡</span>
+                <h5 class="fw-bold mb-0">Bộ lọc theo nhu cầu</h5>
+            </div>
+            <p class="text-muted small mb-0">
+                Lọc nhanh 1-click dành cho sinh viên: Học tập giá mềm (&le;20 triệu), Siêu mỏng nhẹ (&le;1.5kg), Đồ họa & Gaming, Đa nhiệm RAM &ge;16GB.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 bg-white">
+            <div class="d-flex align-items-center mb-3">
+                <span class="fs-2 me-3">🛡️</span>
+                <h5 class="fw-bold mb-0">Dữ liệu thực tế 100%</h5>
+            </div>
+            <p class="text-muted small mb-0">
+                Đầy đủ điểm số benchmark PassMark CPU và GPU chính thức cùng 1.125 trích dẫn nguồn đối soát minh bạch từ các nhà bán lẻ uy tín tại Việt Nam.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
