@@ -4,15 +4,21 @@
 <!-- Hero Section -->
 <div class="p-5 mb-5 bg-light rounded-3 shadow-sm border">
     <div class="container-fluid py-4 text-center">
-        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6 mb-3">
-            📚 Phần 1: Quản lý Dữ liệu & Khởi tạo Máy chủ Web
-        </span>
-        <h1 class="display-5 fw-bold text-primary mb-3">Hệ thống Quản lý & Khám phá Dữ liệu Laptop</h1>
+        <div class="d-flex justify-content-center gap-2 mb-3 flex-wrap">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6">
+                📚 Quản lý dữ liệu thực tế
+            </span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+                🤖 Machine Learning Dự đoán giá (Phần 4)
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold text-primary mb-3">Hệ thống Quản lý & Dự đoán Giá Laptop</h1>
         <p class="col-md-9 mx-auto fs-5 text-muted">
-            Thu thập, làm sạch và tra cứu dữ liệu thực tế của 225 mẫu laptop từ các thương hiệu phổ biến trên thị trường Việt Nam (ASUS, Apple, Dell, HP, Lenovo, Acer, MSI...).
+            Thu thập, chuẩn hóa 225 mẫu laptop thực tế trên thị trường Việt Nam kết hợp mô hình Trí tuệ Nhân tạo / Học máy (Machine Learning) ước tính giá bán thông minh và gợi ý cấu hình tối ưu.
         </p>
         <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-            <a href="/laptops" class="btn btn-primary btn-lg shadow-sm px-4">📋 Khám phá kho dữ liệu laptop</a>
+            <a href="/predict" class="btn btn-primary btn-lg shadow-sm px-4">🤖 Dự đoán giá Laptop (Phần 4)</a>
+            <a href="/laptops" class="btn btn-outline-primary btn-lg shadow-sm px-4">📋 Khám phá kho 225 laptop</a>
         </div>
     </div>
 </div>
@@ -57,6 +63,26 @@
     </div>
 </div>
 
+<!-- Phần 4 Feature Highlight Banner -->
+<div class="card border-0 shadow-sm mb-5 bg-gradient text-white" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #052c65 100%);">
+    <div class="card-body p-4 p-lg-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-2 fw-bold mb-3">🔥 TÍNH NĂNG NỔI BẬT - PHẦN 4</span>
+                <h3 class="fw-bold mb-2">Mô hình Học máy Dự đoán Giá & Đề xuất Cấu hình</h3>
+                <p class="text-white-50 mb-4 mb-lg-0 fs-6">
+                    Hệ thống tích hợp hai thuật toán hồi quy kinh điển <strong>Linear Regression (với StandardScaler Pipeline)</strong> và <strong>Random Forest Regressor</strong> để tự động ước tính giá bán tức thì từ 9 thông số kỹ thuật cốt lõi. Đồng thời đề xuất Top 5 mẫu laptop thực tế có cấu hình tương đương trong tầm giá chênh lệch &plusmn;2 triệu đồng.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="/predict" class="btn btn-warning btn-lg fw-bold px-4 shadow">
+                    Trải nghiệm Dự đoán ngay ➜
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Tính năng nổi bật -->
 <div class="row g-4 mb-4">
     <div class="col-md-4">
@@ -84,11 +110,11 @@
     <div class="col-md-4">
         <div class="card h-100 border-0 shadow-sm p-4 bg-white">
             <div class="d-flex align-items-center mb-3">
-                <span class="fs-2 me-3">🛡️</span>
-                <h5 class="fw-bold mb-0">Dữ liệu thực tế 100%</h5>
+                <span class="fs-2 me-3">🎯</span>
+                <h5 class="fw-bold mb-0">Tư vấn Cấu hình 1-Click</h5>
             </div>
             <p class="text-muted small mb-0">
-                Đầy đủ điểm số benchmark PassMark CPU và GPU chính thức cùng 1.125 trích dẫn nguồn đối soát minh bạch từ các nhà bán lẻ uy tín tại Việt Nam.
+                Gợi ý sẵn 3 preset tiêu chuẩn theo ngành học: Kinh tế / Văn phòng, CNTT / Lập trình và Đồ họa / Kỹ thuật / Gaming.
             </p>
         </div>
     </div>

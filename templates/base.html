@@ -22,13 +22,18 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto gap-lg-2">
+                <ul class="navbar-nav ms-auto gap-lg-2 align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/' %}active fw-bold text-white{% endif %}" href="/">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white btn-sm px-3 {% if request.path == '/laptops' %}active fw-bold{% endif %}" href="/laptops">
+                        <a class="nav-link {% if request.path == '/laptops' %}active fw-bold text-white{% endif %}" href="/laptops">
                             📋 Kho dữ liệu laptop
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white btn-sm px-3 ms-lg-2 {% if request.path == '/predict' %}active fw-bold{% endif %}" href="/predict">
+                            🤖 Định giá & Dự đoán
                         </a>
                     </li>
                 </ul>
@@ -38,6 +43,17 @@
 
     <!-- Main Content -->
     <div class="container my-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block content %}
         {% endblock %}
     </div>
@@ -45,8 +61,8 @@
     <!-- Footer -->
     <footer class="bg-white border-top py-4 mt-5">
         <div class="container text-center text-muted small">
-            <p class="mb-1 fw-bold text-dark">Laptops – Hệ thống Quản lý & Khám phá Dữ liệu Laptop Thực tế</p>
-            <p class="mb-0">Dữ liệu thực nghiệm 225 model chính thức tại Việt Nam | Nguồn kiểm chứng minh bạch từ Thegioididong, FPT Shop, CellphoneS và PassMark.</p>
+            <p class="mb-1 fw-bold text-dark">Laptops – Hệ thống Quản lý, Khám phá & Dự đoán Giá Laptop Thực tế</p>
+            <p class="mb-0">Dữ liệu thực nghiệm 225 model chính thức tại Việt Nam | Tích hợp Mô hình Học máy (Machine Learning) ước tính giá bán và tư vấn cấu hình.</p>
         </div>
     </footer>
 

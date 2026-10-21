@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Header tiêu đề thân thiện với sinh viên -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6">
+                🤖 Định giá thông minh
+            </span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2 fs-6">
+                💡 Tư vấn theo ngành học
+            </span>
+        </div>
+        <h2 class="text-primary fw-bold">Ước tính giá laptop & Tư vấn cấu hình tối ưu</h2>
+        <p class="text-muted fs-6 mb-0">
+            Bạn đang chuẩn bị mua laptop hoặc muốn kiểm tra một cấu hình xem mức giá bao nhiêu là hợp lý? Hãy chọn nhanh cấu hình gợi ý theo ngành học dưới đây hoặc tự chỉnh thông số để máy tính ước tính giá thị trường và gợi ý ngay 5 mẫu máy tương tự.
+        </p>
+    </div>
+</div>
+
+<!-- LỚP 1: GỢI Ý NHANH CẤU HÌNH THEO NGÀNH HỌC (Sinh viên chọn 1 click) -->
+<div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <div>
+                <h5 class="fw-bold text-dark mb-1">🎓 Chọn nhanh mẫu cấu hình theo ngành học của bạn</h5>
+                <small class="text-muted">Bấm vào ngành học của bạn để hệ thống tự động điền các thông số kỹ thuật chuẩn:</small>
+            </div>
+            <span class="badge bg-white text-primary border shadow-sm px-3 py-2">✨ Tự động điền 1-Click</span>
+        </div>
+
+        <div class="row g-3">
+            <!-- Mẫu 1: Kinh tế / Văn phòng -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-3 bg-white preset-card" style="cursor: pointer; border-left: 4px solid #0d6efd !important;" onclick="applyPreset('office')">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="fs-4">📘</span>
+                        <div>
+                            <strong class="d-block text-primary">Kinh tế / Văn phòng / Xã hội</strong>
+                            <small class="text-muted">Mỏng nhẹ, pin trâu, đa nhiệm tốt</small>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled small text-muted mb-3 ps-1">
+                        <li>⚡ CPU i5/Ryzen 5 tiết kiệm điện (~13,000đ)</li>
+                        <li>🎮 GPU Onboard (Intel Iris / AMD Vega)</li>
+                        <li>💾 RAM 16 GB | Ổ cứng SSD 512 GB</li>
+                        <li>⚖️ Siêu nhẹ 1.35 kg | Màn 14.0" (60Hz)</li>
+                    </ul>
+                    <button type="button" class="btn btn-outline-primary btn-sm w-100 mt-auto fw-semibold">
+                        Áp dụng mẫu này ➜
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mẫu 2: CNTT / Lập trình -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-3 bg-white preset-card" style="cursor: pointer; border-left: 4px solid #198754 !important;" onclick="applyPreset('dev')">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="fs-4">💻</span>
+                        <div>
+                            <strong class="d-block text-success">Công nghệ thông tin / Lập trình</strong>
+                            <small class="text-muted">CPU mạnh, đa nhiệm code & máy ảo</small>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled small text-muted mb-3 ps-1">
+                        <li>⚡ CPU i7/Ryzen 7 đa nhân (~21,000đ)</li>
+                        <li>🎮 GPU Rời tầm trung hoặc Onboard xịn</li>
+                        <li>💾 RAM 16 GB | Ổ cứng SSD 512 GB</li>
+                        <li>⚖️ Trọng lượng 1.70 kg | Màn 15.6" (120Hz)</li>
+                    </ul>
+                    <button type="button" class="btn btn-outline-success btn-sm w-100 mt-auto fw-semibold">
+                        Áp dụng mẫu này ➜
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mẫu 3: Đồ họa 3D / Gaming -->
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-3 bg-white preset-card" style="cursor: pointer; border-left: 4px solid #dc3545 !important;" onclick="applyPreset('gaming')">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="fs-4">🎨</span>
+                        <div>
+                            <strong class="d-block text-danger">Đồ họa 3D / Kiến trúc / Gaming</strong>
+                            <small class="text-muted">GPU rời cực khủng, tản nhiệt to</small>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled small text-muted mb-3 ps-1">
+                        <li>⚡ CPU Hiệu năng cao H/HX (~26,000đ)</li>
+                        <li>🎮 GPU RTX 3050 / 4060 rời (~14,800đ)</li>
+                        <li>💾 RAM 16 GB | Ổ cứng SSD 512 GB</li>
+                        <li>⚖️ Trọng lượng 2.25 kg | Màn 15.6" (144Hz)</li>
+                    </ul>
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100 mt-auto fw-semibold">
+                        Áp dụng mẫu này ➜
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- THÔNG BÁO LỖI NẾU CÓ -->
+{% if error %}
+<div class="alert alert-danger shadow-sm mb-4" role="alert">
+    <strong>Thông báo lỗi:</strong> {{ error }}
+</div>
+{% endif %}
+
+<!-- KẾT QUẢ DỰ ĐOÁN NẾU ĐÃ TÍNH TOÁN -->
+{% if predicted_price is not none %}
+<div class="alert alert-success shadow-sm mb-4 border-success p-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <span class="badge bg-success px-3 py-1 mb-2">🎉 Kết quả định giá tham khảo</span>
+            <h4 class="alert-heading fw-bold mb-1">Mức giá thị trường ước tính cho cấu hình này:</h4>
+            <span class="fs-1 fw-bold text-success">{{ "{:,.0f}".format(predicted_price) }} VND</span>
+            <p class="text-muted small mb-0 mt-1">
+                * Ước tính dựa trên mô hình học máy <strong>{{ model_info.model_name }}</strong> với 225 mẫu laptop thực tế tại Việt Nam.
+            </p>
+        </div>
+        <div class="d-flex flex-column gap-2">
+            {% if recommendations %}
+            <a href="#recommendationsSection" class="btn btn-success btn-lg shadow-sm">
+                🎯 Xem ngay 5 laptop gợi ý tương tự ➜
+            </a>
+            {% endif %}
+            <a href="#predictForm" class="btn btn-outline-secondary">
+                ✏️ Điều chỉnh cấu hình khác
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 5 GỢI Ý LAPTOP TƯƠNG TỰ CHÊNH LỆCH +/- 1-2 TRIỆU VNĐ -->
+{% if recommendations %}
+<div class="card shadow-sm border-0 mb-5" id="recommendationsSection">
+    <div class="card-header text-white fw-bold d-flex align-items-center justify-content-between py-3" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+        <div>
+            <span class="fs-5">💡 Top 5 gợi ý laptop cấu hình tương tự (Chênh lệch ±1 - 2 triệu VNĐ)</span>
+        </div>
+        <span class="badge bg-light text-dark fw-bold">{{ recommendations|length }} mẫu phù hợp</span>
+    </div>
+    <div class="card-body p-4 bg-light">
+        <p class="text-muted mb-4">
+            Dựa trên <strong>225 mẫu laptop thực tế</strong>, hệ thống tự động tìm kiếm các model có mức giá xấp xỉ giá ước tính (chênh lệch trong khoảng 1 - 2 triệu VNĐ) và tối ưu độ tương thích về CPU, GPU, RAM, Ổ cứng và Màn hình:
+        </p>
+        
+        <div class="row g-3">
+            {% for item in recommendations %}
+            <div class="col-12">
+                <div class="card h-100 border-0 shadow-sm p-3 bg-white" style="transition: transform 0.2s, box-shadow 0.2s;">
+                    <div class="row align-items-center">
+                        <!-- Cột 1: Tên, Hãng, Giá & Độ lệch -->
+                        <div class="col-lg-5 col-md-6 mb-3 mb-md-0">
+                            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                <span class="badge {% if loop.index == 1 %}bg-warning text-dark{% else %}bg-secondary{% endif %} fw-bold px-2 py-1">
+                                    #{{ loop.index }} {% if loop.index == 1 %}Tương đồng nhất{% endif %}
+                                </span>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
+                                    {{ item.brand }}
+                                </span>
+                                <span class="text-warning small fw-bold">
+                                    ★ {{ item.rating }}
+                                </span>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">{{ item.name }}</h5>
+                            <div class="d-flex align-items-baseline gap-2 mt-2 flex-wrap">
+                                <span class="fs-4 fw-bold text-primary">{{ "{:,.0f}".format(item.price) }} đ</span>
+                                {% if item.price_diff > 0 %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle" title="Cao hơn giá ước tính">
+                                        +{{ "{:,.0f}".format(item.price_diff) }} đ
+                                    </span>
+                                {% elif item.price_diff < 0 %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle" title="Tiết kiệm hơn giá ước tính">
+                                        {{ "{:,.0f}".format(item.price_diff) }} đ (Tiết kiệm)
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-info-subtle text-info">Bằng giá ước tính</span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Thanh tiến trình tương đồng -->
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between small text-muted mb-1">
+                                    <span>Tương đồng cấu hình:</span>
+                                    <strong class="text-success">{{ item.similarity_pct }}%</strong>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ item.similarity_pct }}%;" aria-valuenow="{{ item.similarity_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cột 2: Cấu hình chi tiết -->
+                        <div class="col-lg-5 col-md-6 mb-3 mb-md-0 border-start ps-lg-4">
+                            <div class="row g-2 small">
+                                <div class="col-sm-6">
+                                    <div class="p-2 rounded bg-light border">
+                                        <div class="text-muted">⚡ Bộ xử lý CPU</div>
+                                        <strong class="text-truncate d-block" title="{{ item.cpu }}">{{ item.cpu }}</strong>
+                                        <span class="badge bg-light text-dark border">{{ "{:,}".format(item.cpu_score) }} điểm</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="p-2 rounded bg-light border">
+                                        <div class="text-muted">🎮 Card đồ họa GPU</div>
+                                        <strong class="text-truncate d-block" title="{{ item.gpu }}">{{ item.gpu }}</strong>
+                                        <span class="badge bg-light text-dark border">{{ "{:,}".format(item.gpu_score) }} điểm</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="p-2 rounded bg-light border">
+                                        <div class="text-muted">💾 Bộ nhớ RAM & Ổ cứng</div>
+                                        <strong>{{ item.ram }} GB RAM | {{ item.storage }} GB SSD</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="p-2 rounded bg-light border">
+                                        <div class="text-muted">🖥️ Màn hình</div>
+                                        <strong>{{ item.screen_size }}" {% if item.resolution %}{{ item.resolution }}{% endif %} ({{ item.refresh_rate }}Hz)</strong>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between text-muted px-1 mt-1">
+                                        <span>⚖️ Trọng lượng: <strong>{{ item.weight }} kg</strong></span>
+                                        <span>🔋 Pin: <strong>{{ item.battery }} Wh</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cột 3: Nút chức năng -->
+                        <div class="col-lg-2 col-md-12 text-center text-lg-end d-flex flex-lg-column justify-content-center gap-2 mt-3 mt-lg-0">
+                            <a href="{{ url_for('laptops') }}" class="btn btn-outline-primary btn-sm w-100" title="Xem trong kho máy">
+                                📋 Xem trong kho
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+<!-- FORM NHẬP THÔNG SỐ CẤU HÌNH -->
+<div class="card shadow-sm border-0 mb-5" id="predictForm">
+    <div class="card-header bg-primary text-white fw-bold py-3 d-flex align-items-center justify-content-between">
+        <span>⚙️ Bảng tùy chỉnh thông số kỹ thuật</span>
+        <small class="text-white-50">Có thể sửa trực tiếp hoặc dùng nút mẫu ở trên</small>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('predict') }}">
+            <!-- Nhóm 1: Sức mạnh xử lý -->
+            <h6 class="fw-bold text-primary mb-3">1. Sức mạnh xử lý & Đồ họa</h6>
+            <div class="row g-3 mb-4">
+                <!-- CPU Score -->
+                <div class="col-md-6">
+                    <label for="cpu_score" class="form-label fw-bold">Điểm hiệu năng CPU (PassMark)</label>
+                    <input type="number" step="any" class="form-control" id="cpu_score" name="cpu_score" 
+                           value="{{ form_data.cpu_score if form_data else '18000' }}" placeholder="VD: 18000" required>
+                    <div class="form-text small">
+                        💡 Gợi ý: i5/Ryzen 5 (~12,000 - 15,000đ); i7/Ryzen 7 (~20,000 - 24,000đ); Core i9/HX (~28,000+ đ).
+                    </div>
+                </div>
+
+                <!-- GPU Score -->
+                <div class="col-md-6">
+                    <label for="gpu_score" class="form-label fw-bold">Điểm hiệu năng GPU đồ họa (PassMark G3D)</label>
+                    <input type="number" step="any" class="form-control" id="gpu_score" name="gpu_score" 
+                           value="{{ form_data.gpu_score if form_data else '12000' }}" placeholder="VD: 12000" required>
+                    <div class="form-text small">
+                        💡 Gợi ý: Card Onboard (~2,000 - 3,500đ); RTX 2050/3050 (~7,000 - 9,500đ); RTX 4050/4060 (~14,000 - 20,000đ).
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nhóm 2: Bộ nhớ & Màn hình -->
+            <h6 class="fw-bold text-primary mb-3">2. Bộ nhớ & Màn hình hiển thị</h6>
+            <div class="row g-3 mb-4">
+                <!-- RAM -->
+                <div class="col-md-3 col-sm-6">
+                    <label for="ram" class="form-label fw-bold">Dung lượng RAM (GB)</label>
+                    <input type="number" step="any" class="form-control" id="ram" name="ram" 
+                           value="{{ form_data.ram if form_data else '16' }}" placeholder="VD: 16" required>
+                    <small class="text-muted">Khuyên dùng: 16 GB</small>
+                </div>
+
+                <!-- Storage -->
+                <div class="col-md-3 col-sm-6">
+                    <label for="storage" class="form-label fw-bold">Ổ cứng SSD (GB)</label>
+                    <input type="number" step="any" class="form-control" id="storage" name="storage" 
+                           value="{{ form_data.storage if form_data else '512' }}" placeholder="VD: 512" required>
+                    <small class="text-muted">Phổ biến: 512 hoặc 1024 GB</small>
+                </div>
+
+                <!-- Screen Size -->
+                <div class="col-md-3 col-sm-6">
+                    <label for="screen_size" class="form-label fw-bold">Màn hình (inch)</label>
+                    <input type="number" step="0.1" class="form-control" id="screen_size" name="screen_size" 
+                           value="{{ form_data.screen_size if form_data else '15.6' }}" placeholder="VD: 15.6" required>
+                    <small class="text-muted">Gọn: 14.0" | Rộng: 15.6"</small>
+                </div>
+
+                <!-- Refresh Rate -->
+                <div class="col-md-3 col-sm-6">
+                    <label for="refresh_rate" class="form-label fw-bold">Tần số quét (Hz)</label>
+                    <input type="number" step="any" class="form-control" id="refresh_rate" name="refresh_rate" 
+                           value="{{ form_data.refresh_rate if form_data else '144' }}" placeholder="VD: 144" required>
+                    <small class="text-muted">Văn phòng: 60Hz | Gaming: 144Hz</small>
+                </div>
+            </div>
+
+            <!-- Nhóm 3: Tính di động & Độ hài lòng -->
+            <h6 class="fw-bold text-primary mb-3">3. Tính di động & Đánh giá</h6>
+            <div class="row g-3 mb-4">
+                <!-- Weight -->
+                <div class="col-md-4">
+                    <label for="weight" class="form-label fw-bold">Trọng lượng (kg)</label>
+                    <input type="number" step="0.01" class="form-control" id="weight" name="weight" 
+                           value="{{ form_data.weight if form_data else '2.1' }}" placeholder="VD: 2.1" required>
+                    <small class="text-muted">Mỏng nhẹ: 1.2 - 1.4 kg | Gaming: 2.0 - 2.4 kg</small>
+                </div>
+
+                <!-- Battery -->
+                <div class="col-md-4">
+                    <label for="battery" class="form-label fw-bold">Dung lượng pin (Wh)</label>
+                    <input type="number" step="any" class="form-control" id="battery" name="battery" 
+                           value="{{ form_data.battery if form_data else '70' }}" placeholder="VD: 70" required>
+                    <small class="text-muted">Tiêu chuẩn: 50 - 70 Wh</small>
+                </div>
+
+                <!-- Rating -->
+                <div class="col-md-4">
+                    <label for="rating" class="form-label fw-bold">Đánh giá người dùng (sao / 5)</label>
+                    <input type="number" step="0.1" min="1" max="5" class="form-control" id="rating" name="rating" 
+                           value="{{ form_data.rating if form_data else '4.5' }}" placeholder="VD: 4.5" required>
+                    <small class="text-muted">Thang điểm 1.0 đến 5.0</small>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm fw-bold">
+                    🚀 Ước tính giá ngay
+                </button>
+                <a href="{{ url_for('predict') }}" class="btn btn-outline-secondary px-4 py-2">
+                    Đặt lại mặc định
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- LỚP 2: GÓC KHOA HỌC DỮ LIỆU & ĐÁNH GIÁ MÔ HÌNH MACHINE LEARNING (ACCORDION THU GỌN) -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="accordion shadow-sm" id="predictAcademicAccordion">
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingPredictAcademic">
+                    <button class="accordion-button collapsed bg-light text-dark fw-bold rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePredictAcademic" aria-expanded="false" aria-controls="collapsePredictAcademic">
+                        <span class="me-2">🔬</span>
+                        <span>Góc khoa học dữ liệu: Đánh giá độ tin cậy của mô hình AI (Model Evaluation)</span>
+                        <span class="badge bg-secondary ms-auto me-3 small">Dành cho báo cáo & bảo vệ đề tài</span>
+                    </button>
+                </h2>
+                <div id="collapsePredictAcademic" class="accordion-collapse collapse" aria-labelledby="headingPredictAcademic" data-bs-parent="#predictAcademicAccordion">
+                    <div class="accordion-body p-4 bg-white border-top">
+                        <div class="alert alert-light border small mb-4">
+                            <strong>📌 Báo cáo thực nghiệm:</strong> Mô hình được huấn luyện trên 80% dữ liệu thực tế ({{ model_info.train_size }} mẫu) và kiểm thử độc lập trên 20% dữ liệu còn lại ({{ model_info.test_size }} mẫu) để đo lường độ chính xác và khả năng tổng quát hóa.
+                        </div>
+
+                        <!-- Thống kê mô hình hiện tại -->
+                        <div class="row mb-4 g-3">
+                            <div class="col-md-6">
+                                <div class="card h-100 border p-3 bg-light">
+                                    <h6 class="fw-bold text-primary mb-2">Mô hình đang hoạt động: {{ model_info.model_name }}</h6>
+                                    <p class="small text-muted mb-3">Chỉ số đo lường sai số trên tập kiểm thử (Test Set):</p>
+                                    <div class="row text-center g-2">
+                                        <div class="col-4">
+                                            <div class="border rounded p-2 bg-white">
+                                                <small class="text-muted d-block" title="Sai số tuyệt đối trung bình">MAE</small>
+                                                <strong class="text-dark">{{ "{:,.0f}".format(model_info.metrics[active_key].mae) }} đ</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border rounded p-2 bg-white">
+                                                <small class="text-muted d-block" title="Căn bậc hai sai số toàn phương">RMSE</small>
+                                                <strong class="text-dark">{{ "{:,.0f}".format(model_info.metrics[active_key].rmse) }} đ</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border rounded p-2 bg-white">
+                                                <small class="text-muted d-block" title="Hệ số xác định R²">R² Score</small>
+                                                <strong class="text-success">{{ "{:.4f}".format(model_info.metrics[active_key].r2) }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 small text-muted">
+                                        * <strong>R² đạt {{ "{:.1f}".format(model_info.metrics[active_key].r2 * 100) }}%:</strong> Cấu hình phần cứng giải thích được đại đa số sự biến động của giá bán.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card h-100 border p-3 bg-light">
+                                    <h6 class="fw-bold text-dark mb-2">So sánh thực nghiệm 2 thuật toán Hồi quy</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped mb-0 small align-middle bg-white">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Thuật toán</th>
+                                                    <th>MAE (Sai số TB)</th>
+                                                    <th>RMSE</th>
+                                                    <th>R² Score (Độ khớp)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr {% if model_info.model_name == 'Linear Regression' %}class="table-success fw-bold"{% endif %}>
+                                                    <td>Linear Regression</td>
+                                                    <td>{{ "{:,.0f}".format(model_info.metrics.lr.mae) }} đ</td>
+                                                    <td>{{ "{:,.0f}".format(model_info.metrics.lr.rmse) }} đ</td>
+                                                    <td>{{ "{:.4f}".format(model_info.metrics.lr.r2) }}</td>
+                                                </tr>
+                                                <tr {% if model_info.model_name == 'Random Forest Regressor' %}class="table-success fw-bold"{% endif %}>
+                                                    <td>Random Forest</td>
+                                                    <td>{{ "{:,.0f}".format(model_info.metrics.rf.mae) }} đ</td>
+                                                    <td>{{ "{:,.0f}".format(model_info.metrics.rf.rmse) }} đ</td>
+                                                    <td>{{ "{:.4f}".format(model_info.metrics.rf.r2) }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="mt-3 small text-muted">
+                                        * Random Forest học được các quan hệ phi tuyến tính phức tạp giữa CPU/GPU cao cấp và biên lợi nhuận của laptop cao cấp.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chú thích học thuật -->
+                        <div class="p-3 bg-light rounded border small text-muted">
+                            <h6 class="fw-bold text-dark mb-1">📖 Diễn giải thuật ngữ học máy:</h6>
+                            <ul class="mb-0 ps-3">
+                                <li><strong>MAE (Mean Absolute Error):</strong> Độ lệch trung bình tính bằng VNĐ giữa mức giá mô hình ước đoán và giá bán niêm yết thực tế trên thị trường.</li>
+                                <li><strong>RMSE (Root Mean Squared Error):</strong> Phạt nặng hơn các trường hợp dự đoán lệch quá xa do bình phương sai số trước khi lấy căn bậc hai.</li>
+                                <li><strong>R² Score (Hệ số xác định):</strong> Đo lường tỷ lệ phương sai của biến mục tiêu (Giá) được mô hình giải thích. Càng gần 1.0 thì mô hình càng mạnh.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT ÁP DỤNG MẪU CẤU HÌNH THEO NGÀNH HỌC -->
+<script>
+    function applyPreset(type) {
+        var presets = {
+            'office': {
+                cpu_score: 13000,
+                gpu_score: 2500,
+                ram: 16,
+                storage: 512,
+                screen_size: 14.0,
+                refresh_rate: 60,
+                weight: 1.35,
+                battery: 54,
+                rating: 4.6
+            },
+            'dev': {
+                cpu_score: 21000,
+                gpu_score: 4150,
+                ram: 16,
+                storage: 512,
+                screen_size: 15.6,
+                refresh_rate: 120,
+                weight: 1.70,
+                battery: 70,
+                rating: 4.7
+            },
+            'gaming': {
+                cpu_score: 26000,
+                gpu_score: 14800,
+                ram: 16,
+                storage: 512,
+                screen_size: 15.6,
+                refresh_rate: 144,
+                weight: 2.25,
+                battery: 70,
+                rating: 4.6
+            }
+        };
+
+        var data = presets[type];
+        if (!data) return;
+
+        // Điền vào các ô input
+        document.getElementById('cpu_score').value = data.cpu_score;
+        document.getElementById('gpu_score').value = data.gpu_score;
+        document.getElementById('ram').value = data.ram;
+        document.getElementById('storage').value = data.storage;
+        document.getElementById('screen_size').value = data.screen_size;
+        document.getElementById('refresh_rate').value = data.refresh_rate;
+        document.getElementById('weight').value = data.weight;
+        document.getElementById('battery').value = data.battery;
+        document.getElementById('rating').value = data.rating;
+
+        // Cuộn mượt mà tới form
+        var formElement = document.getElementById('predictForm');
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Tạo hiệu ứng flash viền xanh để người dùng biết form vừa được cập nhật
+        formElement.classList.add('border', 'border-success', 'border-2');
+        setTimeout(function() {
+            formElement.classList.remove('border-success', 'border-2');
+        }, 1200);
+    }
+</script>
+{% endblock %}
+
