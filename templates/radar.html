@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <span class="badge bg-danger px-3 py-2 mb-2">PHẦN 3: SO SÁNH TRỰC QUAN ĐA CHIỀU</span>
+                <h1 class="h3 fw-bold text-dark">So Sánh Cấu Hình Bằng Biểu Đồ Radar (Spider Plot)</h1>
+                <p class="text-muted mb-0">Công cụ đối chiếu 2 mẫu laptop trên hệ trục tọa độ cực (Polar) sau khi chuẩn hóa MinMaxScaler về thang [0, 1].</p>
+            </div>
+            <div>
+                <a href="/clustering" class="btn btn-outline-primary">
+                    📊 Xem Phân Cụm K-Means & PCA
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Cột trái: Bộ điều khiển chọn máy & thuộc tính -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 sticky-top" style="top: 80px;">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title fw-bold mb-0">Thiết Lập So Sánh</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="/radar">
+                    <!-- Chọn Máy 1 -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary">
+                            🔵 Laptop 1 (Đường màu Xanh):
+                        </label>
+                        <select name="p1" class="form-select form-select-sm" required>
+                            {% for lap in all_laptops %}
+                            <option value="{{ lap }}" {% if lap == selected_p1 %}selected{% endif %}>
+                                {{ lap }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Chọn Máy 2 -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-danger">
+                            🔴 Laptop 2 (Đường màu Đỏ):
+                        </label>
+                        <select name="p2" class="form-select form-select-sm" required>
+                            {% for lap in all_laptops %}
+                            <option value="{{ lap }}" {% if lap == selected_p2 %}selected{% endif %}>
+                                {{ lap }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Chọn các thuộc tính so sánh -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Các thuộc tính đối chiếu (Ít nhất 3 thuộc tính):</label>
+                        <div class="border rounded p-2 bg-light small">
+                            {% for attr in available_attributes %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="attrs" value="{{ attr }}" 
+                                       id="attr_{{ attr }}" {% if attr in selected_attrs %}checked{% endif %}>
+                                <label class="form-check-label" for="attr_{{ attr }}">
+                                    {{ attr }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                        🔄 Cập Nhật Biểu Đồ Radar
+                    </button>
+                </form>
+            </div>
+            <div class="card-footer bg-light small text-muted">
+                <strong>Gợi ý:</strong> Bạn cũng có thể chạy lệnh từ Terminal bằng script CLI:
+                <code>python radarChartPlot.py --p1 "{{ selected_p1 }}" --p2 "{{ selected_p2 }}" --Attribute "{{ ','.join(selected_attrs) }}"</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Hiển thị Biểu đồ Radar và Bảng Thông số chi tiết -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold mb-0">Biểu Đồ Radar So Sánh Trực Quan</h5>
+                <a href="{{ url_for('static', filename='images/radar_comparison.png') }}?v={{ cache_id }}" 
+                   download="radar_comparison.png" class="btn btn-sm btn-outline-success">
+                    💾 Tải Ảnh Biểu Đồ
+                </a>
+            </div>
+            <div class="card-body text-center p-3">
+                <img src="{{ url_for('static', filename='images/radar_comparison.png') }}?v={{ cache_id }}" 
+                     alt="Biểu đồ so sánh Radar Chart" class="img-fluid rounded border shadow-sm" style="max-height: 600px;">
+            </div>
+        </div>
+
+        <!-- Bảng chi tiết đối chiếu thông số -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title fw-bold mb-0">Bảng Đối Chiếu Chỉ Số Trực Tiếp</h5>
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-hover align-middle mb-0 text-center small">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-start ps-3">Thuộc Tính</th>
+                            <th class="text-primary text-start">🔵 {{ selected_p1 }}</th>
+                            <th class="text-danger text-start">🔴 {{ selected_p2 }}</th>
+                            <th>Đơn Vị / Thang Đo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in comparison_rows %}
+                        <tr>
+                            <td class="text-start ps-3 fw-bold">{{ row.attr }}</td>
+                            <td class="text-start text-primary fw-bold">
+                                {{ row.val1_display }}
+                                <span class="badge bg-light text-primary border ms-1">{{ row.val1_norm }}</span>
+                            </td>
+                            <td class="text-start text-danger fw-bold">
+                                {{ row.val2_display }}
+                                <span class="badge bg-light text-danger border ms-1">{{ row.val2_norm }}</span>
+                            </td>
+                            <td class="text-muted">{{ row.unit }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

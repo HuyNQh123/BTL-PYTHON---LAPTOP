@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <span class="badge bg-primary px-3 py-2 mb-2">PHẦN 3: MACHINE LEARNING & GIẢM CHIỀU</span>
+                <h1 class="h3 fw-bold text-dark">Phân Nhóm Laptop Tự Động (K-Means) & PCA 2D</h1>
+                <p class="text-muted mb-0">Hệ thống áp dụng thuật toán học máy không giám sát K-Means Clustering kết hợp
+                    PCA để phân loại thị trường laptop thành các nhóm đặc trưng.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/radar" class="btn btn-outline-danger">
+                    🕸️ So sánh Radar Chart
+                </a>
+                <a href="/laptops" class="btn btn-outline-primary">
+                    📋 Xem Kho Dữ Liệu
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 1. THẺ THỐNG KÊ TỔNG QUAN CÁC CỤM -->
+<div class="row g-3 mb-5">
+    {% for cluster in cluster_stats %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 border-top border-4 border-{{ cluster.badge_color }}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-{{ cluster.badge_color }} px-2 py-1">Cụm {{ cluster.id }}</span>
+                    <button type="button"
+                        class="btn btn-sm btn-outline-{{ cluster.badge_color }} fw-bold rounded-pill px-3 py-1 shadow-sm d-inline-flex align-items-center gap-1"
+                        data-bs-toggle="modal" data-bs-target="#clusterModal{{ cluster.id }}"
+                        title="Bấm vào đây để xem chi tiết danh sách tất cả các laptop thuộc Cụm {{ cluster.id }}">
+                        <span>🔎 {{ cluster.count }} laptop</span>
+                        <span class="badge bg-{{ cluster.badge_color }} text-white rounded-circle ms-1"
+                            style="font-size: 0.7rem;">&rarr;</span>
+                    </button>
+                </div>
+                <h5 class="card-title fw-bold text-dark mb-3">{{ cluster.name }}</h5>
+                <ul class="list-unstyled small mb-3">
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span class="text-muted">💰 Giá bán TB:</span>
+                        <strong class="text-danger">{{ "{:,.0f}".format(cluster.GiaBan) }} đ</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span class="text-muted">⚡ CPU PassMark TB:</span>
+                        <strong>{{ "{:,.0f}".format(cluster.DiemCPU) }}</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span class="text-muted">🎮 GPU G3D Mark TB:</span>
+                        <strong>{{ "{:,.0f}".format(cluster.DiemGPU) }}</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span class="text-muted">🧠 RAM TB:</span>
+                        <strong>{{ "{:.1f}".format(cluster.RAM) }} GB</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between border-bottom pb-1">
+                        <span class="text-muted">💾 SSD TB:</span>
+                        <strong>{{ "{:.0f}".format(cluster.DungLuongLuuTru) }} GB</strong>
+                    </li>
+                    <li class="mb-1 d-flex justify-content-between">
+                        <span class="text-muted">⚖️ Khối lượng TB:</span>
+                        <strong>{{ "{:.2f}".format(cluster.KhoiLuong) }} kg</strong>
+                    </li>
+                </ul>
+                <div class="bg-light p-2 rounded small text-muted">
+                    <div class="fw-bold mb-1">Mẫu tiêu biểu:</div>
+                    {% for sample in cluster.samples %}
+                    <div class="text-truncate">• {{ sample }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- 2. BIỂU ĐỒ TRỰC QUAN HÓA PCA & ELBOW / SILHOUETTE -->
+<div class="row g-4 mb-5">
+    <!-- Cột trái: Biểu đồ PCA 2D -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title fw-bold mb-0 text-primary">Biểu Đồ Phân Bố Cụm 2D (PCA Projection)</h5>
+                <small class="text-muted">Nén 9 đặc trưng kỹ thuật xuống 2 thành phần chính (PC1 & PC2) để trực quan hóa
+                    không gian đa chiều.</small>
+            </div>
+            <div class="card-body text-center p-3">
+                <img src="{{ url_for('static', filename='images/pca_clusters.png') }}?v={{ cache_id }}"
+                    alt="Biểu đồ phân cụm PCA 2D" class="img-fluid rounded border shadow-sm">
+            </div>
+            <div class="card-footer bg-light small text-muted">
+                <strong>Ý nghĩa kỹ thuật:</strong> Trục hoành PC1 thể hiện sức mạnh cấu hình và tầm giá (chiếm >60%
+                phương sai). Trục tung PC2 thể hiện tính di động và kích thước màn hình. Các dấu X màu đen là tâm cụm
+                (Centroids).
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Biểu đồ Elbow & Silhouette -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title fw-bold mb-0 text-success">Đánh Giá Chọn Số Cụm Tối Ưu k</h5>
+                <small class="text-muted">Phương pháp Elbow (Inertia) & Hệ số phân tách Silhouette Score</small>
+            </div>
+            <div class="card-body text-center p-3">
+                <img src="{{ url_for('static', filename='images/elbow_silhouette_analysis.png') }}?v={{ cache_id }}"
+                    alt="Phương pháp Elbow và Silhouette Score" class="img-fluid rounded border shadow-sm">
+            </div>
+            <div class="card-footer bg-light small text-muted">
+                <strong>Ý nghĩa kỹ thuật:</strong> Đồ thị bên trái biểu diễn Inertia giảm dần; đồ thị bên phải chỉ ra
+                Silhouette Score cao nhất tại k tối ưu, chứng minh các nhóm phân cụm có độ gắn kết cao và tách biệt tốt
+                nhất.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. BẢNG DỮ LIỆU TOÀN BỘ 225 LAPTOP ĐÃ PHÂN CỤM -->
+<div class="card shadow-sm border-0 mb-5">
+    <div class="card-header bg-white py-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+                <h5 class="card-title fw-bold mb-0 text-dark">
+                    📋 Bảng Toàn Bộ {{ total_count }} Laptop Đã Phân Cụm
+                </h5>
+                <small class="text-muted">Dữ liệu được sắp xếp tuần tự theo từng Cụm: <strong>Cụm 0 (122 máy) &rarr; Cụm
+                        1 (78 máy) &rarr; Cụm 2 (25 máy)</strong></small>
+            </div>
+        </div>
+
+        <!-- Bộ lọc Cụm và Ô tìm kiếm trực tiếp trên bảng -->
+        <div class="row g-2 align-items-center">
+            <div class="col-md-7 d-flex gap-1 flex-wrap">
+                <button type="button" class="btn btn-sm btn-dark filter-cluster-btn active px-3"
+                    onclick="filterByCluster('all', this)">
+                    Tất cả ({{ total_count }})
+                </button>
+                {% for cluster in cluster_stats %}
+                <button type="button" class="btn btn-sm btn-outline-{{ cluster.badge_color }} filter-cluster-btn px-3"
+                    onclick="filterByCluster('{{ cluster.id }}', this)">
+                    Cụm {{ cluster.id }} ({{ cluster.count }})
+                </button>
+                {% endfor %}
+            </div>
+            <div class="col-md-5">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light">🔎</span>
+                    <input type="text" class="form-control" id="searchMainTable"
+                        placeholder="Gõ tên máy hoặc hãng để tìm trong bảng..." onkeyup="filterMainTable()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khung cuộn hiển thị toàn bộ 225 máy -->
+    <div class="card-body p-0 table-responsive" style="max-height: 580px; overflow-y: auto;">
+        <table class="table table-hover table-striped align-middle mb-0 text-center small" id="mainClusteredTable">
+            <thead class="table-dark sticky-top" style="z-index: 2;">
+                <tr>
+                    <th class="text-start ps-3" style="width: 60px;">STT</th>
+                    <th class="text-start">Tên Laptop</th>
+                    <th>Hãng</th>
+                    <th style="min-width: 240px;">Cụm Phân Loại</th>
+                    <th>CPU (Điểm)</th>
+                    <th>GPU (Điểm)</th>
+                    <th>RAM</th>
+                    <th>SSD</th>
+                    <th>Màn Hình</th>
+                    <th>Khối Lượng</th>
+                    <th>Pin</th>
+                    <th class="text-end pe-3">Giá Bán</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in all_clustered_laptops %}
+                <tr class="main-table-row" data-cluster="{{ item.Cluster }}">
+                    <td class="text-start ps-3 text-muted fw-bold">{{ loop.index }}</td>
+                    <td class="text-start ps-2 fw-bold text-dark text-truncate" style="max-width: 280px;"
+                        title="{{ item.TenLaptop }}">
+                        {{ item.TenLaptop }}
+                    </td>
+                    <td><span class="badge bg-secondary">{{ item.Hang }}</span></td>
+                    <td>
+                        <span class="badge bg-{{ item.badge_color }} px-2 py-1 text-wrap text-start">
+                            Cụm {{ item.Cluster }}: {{ item.Cluster_Name }}
+                        </span>
+                    </td>
+                    <td>{{ "{:,.0f}".format(item.DiemCPU) }}</td>
+                    <td>{{ "{:,.0f}".format(item.DiemGPU) }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ item.RAM }} GB</span></td>
+                    <td>{{ item.DungLuongLuuTru }} GB</td>
+                    <td>{{ item.KichThuocManHinh }}" ({{ item.TanSoQuet }}Hz)</td>
+                    <td>{{ item.KhoiLuong }} kg</td>
+                    <td>{{ item.Pin }} Wh</td>
+                    <td class="text-end pe-3 fw-bold text-danger">{{ "{:,.0f}".format(item.GiaBan) }} đ</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer bg-light text-muted small d-flex justify-content-between align-items-center py-2">
+        <span>Hiển thị toàn bộ dữ liệu từ file <code>results_clustered.csv</code></span>
+        <span id="rowCountDisplay" class="fw-bold">225 / 225 laptop</span>
+    </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- 4. BOOTSTRAP MODALS: DANH SÁCH CHI TIẾT TẤT CẢ LAPTOP THEO TỪNG CỤM -->
+<!-- ============================================================================== -->
+{% for cluster in cluster_stats %}
+<div class="modal fade" id="clusterModal{{ cluster.id }}" tabindex="-1" aria-labelledby="modalLabel{{ cluster.id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-{{ cluster.badge_color }} text-white py-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="fs-4">💻</span>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalLabel{{ cluster.id }}">
+                            Danh Sách Laptop Cụm {{ cluster.id }}: {{ cluster.name }}
+                        </h5>
+                        <small class="opacity-75">Tổng cộng: {{ cluster.count }} mẫu máy thuộc phân khúc này</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4 bg-light">
+                <!-- Thanh tìm kiếm nhanh -->
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body p-2 d-flex gap-2">
+                        <span class="input-group-text bg-white border-0 fw-bold">🔎</span>
+                        <input type="text" class="form-control border-0 shadow-none" id="searchCluster{{ cluster.id }}"
+                            placeholder="Gõ tên máy hoặc hãng để lọc nhanh trong Cụm {{ cluster.id }} (ví dụ: ASUS, Legion, Vivobook, RTX...)..."
+                            onkeyup="filterClusterTable('{{ cluster.id }}')">
+                    </div>
+                </div>
+
+                <!-- Bảng danh sách toàn bộ laptop -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0 table-responsive" style="max-height: 520px;">
+                        <table class="table table-hover table-striped align-middle text-center small mb-0"
+                            id="tableCluster{{ cluster.id }}">
+                            <thead class="table-dark sticky-top" style="z-index: 2;">
+                                <tr>
+                                    <th class="text-start ps-3" style="width: 50px;">STT</th>
+                                    <th class="text-start">Tên Laptop</th>
+                                    <th>Hãng</th>
+                                    <th>CPU (Điểm)</th>
+                                    <th>GPU (Điểm)</th>
+                                    <th>RAM</th>
+                                    <th>SSD</th>
+                                    <th>Màn Hình</th>
+                                    <th>Trọng Lượng</th>
+                                    <th>Pin</th>
+                                    <th class="text-end pe-3">Giá Bán</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lap in cluster.laptops %}
+                                <tr>
+                                    <td class="text-start ps-3 text-muted">{{ loop.index }}</td>
+                                    <td class="text-start fw-bold text-dark">{{ lap.TenLaptop }}</td>
+                                    <td><span class="badge bg-secondary">{{ lap.Hang }}</span></td>
+                                    <td>{{ "{:,.0f}".format(lap.DiemCPU) }}</td>
+                                    <td>{{ "{:,.0f}".format(lap.DiemGPU) }}</td>
+                                    <td><span class="badge bg-light text-dark border">{{ lap.RAM }} GB</span></td>
+                                    <td>{{ lap.DungLuongLuuTru }} GB</td>
+                                    <td>{{ lap.KichThuocManHinh }}" ({{ lap.TanSoQuet }}Hz)</td>
+                                    <td>{{ lap.KhoiLuong }} kg</td>
+                                    <td>{{ lap.Pin }} Wh</td>
+                                    <td class="text-end pe-3 fw-bold text-danger">{{ "{:,.0f}".format(lap.GiaBan) }} đ
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-white py-2 d-flex justify-content-between">
+                <span class="text-muted small">
+                    💡 Mẹo: Bạn có thể chọn tên laptop bất kỳ trong bảng này và mang sang trang
+                    <a href="/radar" class="fw-bold text-danger">So sánh Radar Chart</a> để phân tích chi tiết.
+                </span>
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    // Lọc danh sách máy trong từng Modal
+    function filterClusterTable(clusterId) {
+        let input = document.getElementById('searchCluster' + clusterId);
+        let filter = input.value.toLowerCase().trim();
+        let table = document.getElementById('tableCluster' + clusterId);
+        let tr = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < tr.length; i++) {
+            let nameCol = tr[i].getElementsByTagName('td')[1]; // Tên Laptop
+            let brandCol = tr[i].getElementsByTagName('td')[2]; // Hãng
+            if (nameCol || brandCol) {
+                let nameText = (nameCol ? nameCol.textContent : '').toLowerCase();
+                let brandText = (brandCol ? brandCol.textContent : '').toLowerCase();
+                if (nameText.includes(filter) || brandText.includes(filter)) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // Lọc danh sách Bảng Toàn bộ 225 Laptop theo Cụm & Từ khóa
+    let currentClusterFilter = 'all';
+
+    function filterByCluster(clusterId, btn) {
+        currentClusterFilter = String(clusterId);
+
+        // Cập nhật giao diện nút bấm
+        let buttons = document.querySelectorAll('.filter-cluster-btn');
+        buttons.forEach(b => b.classList.remove('active', 'shadow'));
+        btn.classList.add('active', 'shadow');
+
+        applyMainTableFilters();
+    }
+
+    function filterMainTable() {
+        applyMainTableFilters();
+    }
+
+    function applyMainTableFilters() {
+        let searchVal = document.getElementById('searchMainTable').value.toLowerCase().trim();
+        let rows = document.querySelectorAll('.main-table-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            let rowCluster = String(row.getAttribute('data-cluster'));
+            let nameText = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+            let brandText = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+            let matchCluster = (currentClusterFilter === 'all' || rowCluster === currentClusterFilter);
+            let matchSearch = (searchVal === '' || nameText.includes(searchVal) || brandText.includes(searchVal));
+
+            if (matchCluster && matchSearch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        let displayEl = document.getElementById('rowCountDisplay');
+        if (displayEl) {
+            displayEl.textContent = `${visibleCount} / {{ total_count }} laptop`;
+        }
+    }
+</script>
+
+{% endblock %}
