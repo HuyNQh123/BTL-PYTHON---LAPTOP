@@ -1,6 +1,332 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============ DASHBOARD DESIGN SYSTEM ============ */
+:root {
+    --bg-body: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --accent-blue: #3b82f6;
+    --accent-blue-light: #eff6ff;
+    --accent-green: #10b981;
+    --accent-green-light: #ecfdf5;
+    --accent-red: #ef4444;
+    --accent-red-light: #fef2f2;
+    --accent-amber: #f59e0b;
+    --accent-amber-light: #fffbeb;
+    --accent-purple: #8b5cf6;
+    --accent-purple-light: #f5f3ff;
+    --accent-indigo: #6366f1;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.08);
+    --radius: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+}
+body { font-family: 'Inter', sans-serif !important; background: var(--bg-body) !important; }
+
+/* --- Section divider --- */
+.section-divider {
+    display: flex; align-items: center; gap: 14px;
+    margin: 40px 0 24px; padding: 0;
+}
+.section-divider::before, .section-divider::after {
+    content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.section-divider-text {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-muted); white-space: nowrap;
+}
+
+/* --- Tab Navigation --- */
+.dash-tabs {
+    display: flex; gap: 4px; background: var(--bg-card);
+    padding: 6px; border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap;
+}
+.dash-tab {
+    flex: 1; min-width: 170px; padding: 12px 16px; border: none; background: transparent;
+    border-radius: 10px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; transition: all .25s cubic-bezier(.4,0,.2,1); text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.dash-tab:hover { background: var(--bg-card-hover); color: var(--text-primary); transform: translateY(-1px); }
+.dash-tab.active {
+    background: linear-gradient(135deg, #2563eb, #3b82f6); color: #fff;
+    box-shadow: 0 4px 14px rgba(37,99,235,.32);
+}
+
+/* --- Cards --- */
+.dash-card {
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    padding: 24px; margin-bottom: 20px; transition: box-shadow .2s ease;
+}
+.dash-card:hover { box-shadow: var(--shadow-md); }
+.dash-card-header {
+    font-size: 16px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.dash-card-header .icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+
+/* --- KPI cards --- */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 16px; margin-bottom: 24px; }
+.kpi-card {
+    background: var(--bg-card); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 20px;
+    box-shadow: var(--shadow-sm); transition: all .2s ease;
+}
+.kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.kpi-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.kpi-value { font-size: 26px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+.kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+/* --- Insight card --- */
+.insight-card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: var(--radius-xl); padding: 28px 32px;
+    color: #fff; margin-bottom: 24px; position: relative; overflow: hidden;
+}
+.insight-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: rgba(99,102,241,.15);
+}
+.insight-card::after {
+    content: ''; position: absolute; bottom: -30px; left: 30%;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(59,130,246,.1);
+}
+.insight-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; position: relative; z-index: 1; }
+.insight-body { font-size: 14px; line-height: 1.7; color: #cbd5e1; position: relative; z-index: 1; }
+.insight-body strong { color: #fbbf24; }
+
+/* --- Progress bars --- */
+.brand-progress { margin-bottom: 10px; }
+.brand-progress-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.brand-progress-bar { height: 8px; border-radius: 4px; background: var(--border-light); overflow: hidden; }
+.brand-progress-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+
+/* --- Filter pills --- */
+.pill-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+.pill-btn {
+    padding: 8px 18px; border-radius: 50px; border: 1px solid var(--border);
+    background: #ffffff; font-size: 13px; font-weight: 600;
+    color: var(--text-secondary); cursor: pointer; transition: all .25s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.pill-btn:hover {
+    border-color: #93c5fd; color: var(--accent-blue);
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,.12);
+}
+.pill-btn.active {
+    background: linear-gradient(135deg, #2563eb, #3b82f6); color: #fff; border-color: #2563eb;
+    box-shadow: 0 4px 14px rgba(37,99,235,.35); transform: translateY(-1px);
+}
+
+/* --- Top/Bottom rank cards --- */
+.rank-card {
+    border-radius: var(--radius); padding: 16px;
+    border: 1px solid var(--border); transition: all .2s ease; position: relative;
+}
+.rank-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.rank-card.top { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-color: #86efac; }
+.rank-card.bottom { background: linear-gradient(135deg, #fef2f2, #fecaca); border-color: #fca5a5; }
+.rank-medal {
+    position: absolute; top: -8px; left: 12px;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: #fff;
+}
+.rank-card.top .rank-medal { background: var(--accent-green); }
+.rank-card.bottom .rank-medal { background: var(--accent-red); }
+.rank-name { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-top: 12px; line-height: 1.4; }
+.rank-brand { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+.rank-value { font-size: 20px; font-weight: 800; margin-top: 8px; }
+.rank-card.top .rank-value { color: #059669; }
+.rank-card.bottom .rank-value { color: #dc2626; }
+
+/* --- Stats table --- */
+.stats-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.stats-table thead th {
+    background: #f8fafc; padding: 12px 14px; font-weight: 700;
+    color: var(--text-secondary); border-bottom: 2px solid var(--border);
+    text-align: left; position: sticky; top: 0; z-index: 2;
+}
+.stats-table tbody td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary); vertical-align: middle;
+}
+.stats-table tbody tr:hover { background: #f8fafc; }
+.stat-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+}
+.stat-badge.mean { background: var(--accent-blue-light); color: var(--accent-blue); }
+.stat-badge.median { background: var(--accent-green-light); color: var(--accent-green); }
+.stat-badge.std { background: var(--accent-amber-light); color: var(--accent-amber); }
+
+/* --- Leader table --- */
+.leader-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.leader-table thead th {
+    background: #f8fafc; padding: 12px 14px; font-weight: 700;
+    color: var(--text-secondary); border-bottom: 2px solid var(--border); text-align: left;
+}
+.leader-table tbody td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border-light); color: var(--text-primary);
+}
+.leader-table tbody tr:hover { background: #f8fafc; }
+.leader-brand-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 8px; font-weight: 700; font-size: 13px;
+    background: var(--accent-purple-light); color: var(--accent-purple);
+}
+
+/* --- Histogram viewer --- */
+.hist-viewer { display: flex; flex-direction: column; gap: 24px; }
+.hist-summary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.hist-summary-stats { display: flex; flex-direction: column; gap: 12px; }
+.hist-img-wrap {
+    border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);
+    cursor: pointer; transition: all .3s cubic-bezier(.4,0,.2,1); position: relative;
+    background: #ffffff;
+}
+.hist-img-wrap:hover {
+    box-shadow: 0 12px 28px rgba(15,23,42,.12);
+    border-color: #cbd5e1;
+    transform: translateY(-3px);
+}
+.hist-img-wrap img { width: 100%; height: auto; display: block; transition: transform .35s ease; }
+.hist-img-wrap:hover img { transform: scale(1.015); }
+.hist-img-label {
+    position: absolute; top: 12px; left: 12px; z-index: 2;
+    background: rgba(15,23,42,.78); color: #fff;
+    padding: 5px 13px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    backdrop-filter: blur(6px); box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+.hist-zoom-hint {
+    position: absolute; bottom: 12px; right: 12px; z-index: 2;
+    background: rgba(255,255,255,.94); color: var(--text-primary);
+    padding: 5px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 600;
+    backdrop-filter: blur(6px); box-shadow: 0 3px 10px rgba(0,0,0,.15);
+    opacity: 0; transform: translateY(4px); transition: all .25s ease;
+    display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(0,0,0,.08);
+}
+.hist-img-wrap:hover .hist-zoom-hint {
+    opacity: 1; transform: translateY(0);
+}
+
+/* --- Mini Stat Box for Summary Card --- */
+.stat-mini-box {
+    padding: 10px 8px; background: #ffffff; border-radius: 10px;
+    border: 1px solid var(--border); transition: all .2s ease;
+}
+.stat-mini-box:hover {
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+.stat-mini-box.mean { border-top: 3px solid #3b82f6; }
+.stat-mini-box.median { border-top: 3px solid #10b981; }
+.stat-mini-box.std { border-top: 3px solid #f59e0b; }
+
+.badge-pulse {
+    animation: badgePulse 2.5s infinite;
+}
+@keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,.3); }
+    50% { box-shadow: 0 0 0 6px rgba(59,130,246,0); }
+}
+
+.top-panel, .hist-panel {
+    animation: panelFade .35s cubic-bezier(.4,0,.2,1);
+}
+@keyframes panelFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Lightbox --- */
+.lightbox-overlay {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+    justify-content: center; align-items: center; padding: 32px;
+}
+.lightbox-overlay.show { display: flex; }
+.lightbox-overlay img { max-width: 95vw; max-height: 90vh; border-radius: var(--radius); box-shadow: 0 16px 48px rgba(0,0,0,.4); }
+.lightbox-close {
+    position: absolute; top: 20px; right: 28px;
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: rgba(255,255,255,.15); color: #fff; font-size: 24px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,.3); }
+
+/* --- Tab panel animation --- */
+.tab-panel { display: none; animation: fadeSlideIn .35s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Download button --- */
+.btn-download {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 10px; border: 1px solid var(--accent-blue);
+    background: var(--accent-blue); color: #fff; font-size: 13px;
+    font-weight: 600; cursor: pointer; transition: all .2s; text-decoration: none;
+}
+.btn-download:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59,130,246,.35); color: #fff; }
+
+/* --- Search box --- */
+.search-box {
+    padding: 10px 14px 10px 38px; border-radius: 10px; border: 1px solid var(--border);
+    font-size: 13px; width: 260px; transition: border-color .2s;
+    background: var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") no-repeat 12px center;
+}
+.search-box:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .hist-viewer { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .dash-tab { min-width: 130px; font-size: 12px; padding: 10px 10px; }
+    .search-box { width: 100%; }
+}
+
+/* --- Clean CSS classes for dynamic Jinja attributes --- */
+.brand-progress-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-indigo));
+    transition: width .4s ease;
+}
+.badge-rank-1 { background: #fef3c7 !important; color: #b45309 !important; }
+.badge-rank-2 { background: #f1f5f9 !important; color: #475569 !important; }
+.badge-rank-3 { background: #ffedd5 !important; color: #c2410c !important; }
+
+.card-bar-1 { height: 5px; background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.card-bar-2 { height: 5px; background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
+.card-bar-3 { height: 5px; background: linear-gradient(90deg, #b45309, #d97706); }
+.panel-hidden { display: none !important; }
+</style>
+
+<!-- ================================================================ -->
+<!-- PHẦN 1: KHO DỮ LIỆU LAPTOP GỐC (DataTables + Filter Pills)     -->
+<!-- ================================================================ -->
 <div class="row mb-4">
     <div class="col">
         <div class="d-flex align-items-center gap-2 mb-2">
@@ -8,10 +334,10 @@
                 💻 Kho dữ liệu thực tế
             </span>
             <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
-                225 model đã làm sạch & chuẩn hóa
+                {{ laptops|length }} model đã làm sạch &amp; chuẩn hóa
             </span>
         </div>
-        <h2 class="text-primary fw-bold">Danh sách laptop – Thông số kỹ thuật & Giá bán</h2>
+        <h2 class="text-primary fw-bold">Danh sách laptop – Thông số kỹ thuật &amp; Giá bán</h2>
         <p class="text-muted fs-6 mb-0">
             Tra cứu cấu hình phần cứng, điểm benchmark CPU/GPU PassMark chính thức và giá thị trường của <strong>{{ laptops|length }} mẫu laptop thực tế</strong> tại Việt Nam.
         </p>
@@ -33,7 +359,7 @@
                 🪶 Siêu mỏng nhẹ (&le; 1.5 kg)
             </button>
             <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="gaming">
-                🔥 Đồ họa & Gaming (GPU rời)
+                🔥 Đồ họa &amp; Gaming (GPU rời)
             </button>
             <button type="button" class="btn btn-sm btn-outline-secondary filter-pill bg-white" data-filter="ram16">
                 💾 Đa nhiệm mượt (RAM &ge; 16GB)
@@ -92,62 +418,469 @@
     </table>
 </div>
 
-<!-- DataTables Scripts -->
+<!-- ================================================================ -->
+<!-- PHẦN 2: PHÂN TÍCH KHÁM PHÁ DỮ LIỆU (EDA Dashboard)             -->
+<!-- ================================================================ -->
+<div class="section-divider">
+    <span class="section-divider-text">📊 Phân tích Khám phá Dữ liệu (EDA)</span>
+</div>
+
+<!-- TAB NAVIGATION -->
+<div class="dash-tabs" id="dashTabs">
+    <button class="dash-tab active" data-tab="tab-overview">🏆 Tổng quan &amp; Phong độ</button>
+    <button class="dash-tab" data-tab="tab-top3">🥇 Top 3 Cao / Thấp</button>
+    <button class="dash-tab" data-tab="tab-stats">📊 Thống kê Chi tiết</button>
+    <button class="dash-tab" data-tab="tab-histogram">📈 Phân bố Histogram</button>
+</div>
+
+<!-- ======================== TAB 1 ======================== -->
+<div class="tab-panel active" id="tab-overview">
+
+   
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">Tổng Laptop</div>
+            <div class="kpi-value">{{ laptops|length }}</div>
+            <div class="kpi-sub">mẫu trong tập dữ liệu</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Số Thương hiệu</div>
+            <div class="kpi-value">{{ brands|length }}</div>
+            <div class="kpi-sub">hãng sản xuất</div>
+        </div>
+        {% for s in stats if s.brand == 'Toàn bộ' and s.feature == 'price' %}
+        <div class="kpi-card">
+            <div class="kpi-label">Giá Trung bình</div>
+            <div class="kpi-value" style="font-size:22px;">{{ "{:,.0f}".format(s.mean) }}₫</div>
+            <div class="kpi-sub">Mean toàn thị trường</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Giá Trung vị</div>
+            <div class="kpi-value" style="font-size:22px;">{{ "{:,.0f}".format(s.median) }}₫</div>
+            <div class="kpi-sub">Median toàn thị trường</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- HÃNG DẪN ĐẦU -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <span class="icon" style="background: var(--accent-purple-light);">🏆</span>
+            Hãng dẫn đầu theo từng thông số 
+        </div>
+        <div class="table-responsive">
+            <table class="leader-table">
+                <thead><tr><th>Thông số</th><th>Hãng dẫn đầu</th><th>Trung bình</th><th>Trung vị</th></tr></thead>
+                <tbody>
+                    {% for col in num_cols %}
+                    {% if col in leaders %}
+                    <tr>
+                        <td style="font-weight:600;">{{ col_labels.get(col, col) }}</td>
+                        <td><span class="leader-brand-badge"> {{ leaders[col]['brand'] }}</span></td>
+                        <td><span class="stat-badge mean">{{ "{:,.2f}".format(leaders[col]['mean']) }}</span></td>
+                        <td><span class="stat-badge median">{{ "{:,.2f}".format(leaders[col]['median']) }}</span></td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PROGRESS BARS -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <span class="icon" style="background: var(--accent-amber-light);">📊</span>
+            Số tiêu chí dẫn đầu theo từng hãng (trên tổng {{ evaluation.total_criteria }} tiêu chí)
+        </div>
+        {% for brand_name, count in evaluation.brand_lead_count %}
+        <div class="brand-progress">
+            <div class="brand-progress-label">
+                <span>{{ brand_name }}</span>
+                <span style="color: var(--accent-blue); font-weight: 700;">{{ count }} / {{ evaluation.total_criteria }}</span>
+            </div>
+            <div class="brand-progress-bar">
+                <div class="brand-progress-fill" data-progress="{{ (count / evaluation.total_criteria * 100)|round(1) }}"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- BẢNG XẾP HẠNG GIÁ -->
+    <div class="dash-card">
+        <div class="dash-card-header">
+            <span class="icon" style="background: var(--accent-green-light);">💰</span>
+            Xếp hạng Giá trung bình theo Hãng (Từ thấp → cao)
+        </div>
+        <div class="table-responsive">
+            <table class="leader-table">
+                <thead><tr><th>#</th><th>Hãng</th><th>Giá TB (Mean)</th><th>Giá Trung vị</th><th>Độ lệch chuẩn</th><th>Phân khúc</th></tr></thead>
+                <tbody>
+                    {% for item in evaluation.price_ranking %}
+                    <tr>
+                        <td style="font-weight:700; color: var(--text-muted);">{{ loop.index }}</td>
+                        <td style="font-weight:700;">{{ item.brand }}</td>
+                        <td><span class="stat-badge mean">{{ "{:,.0f}".format(item.mean) }}₫</span></td>
+                        <td><span class="stat-badge median">{{ "{:,.0f}".format(item.median) }}₫</span></td>
+                        <td><span class="stat-badge std">{{ "{:,.0f}".format(item.std) if item.std else 'N/A' }}</span></td>
+                        <td>
+                            {% if item.mean >= 35000000 %}
+                            <span style="background:#faf5ff; color:#7c3aed; padding:3px 10px; border-radius:6px; font-size:12px; font-weight:700;">Cao cấp</span>
+                            {% elif item.mean <= 20000000 %}
+                            <span style="background:#f0fdf4; color:#16a34a; padding:3px 10px; border-radius:6px; font-size:12px; font-weight:700;">Bình dân</span>
+                            {% else %}
+                            <span style="background:#eff6ff; color:#2563eb; padding:3px 10px; border-radius:6px; font-size:12px; font-weight:700;">Tầm trung</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- ======================== TAB 2 ======================== -->
+<div class="tab-panel" id="tab-top3">
+        
+
+        <div class="pill-group" id="topPillGroup">
+            {% for col in num_cols %}
+            <button class="pill-btn {% if loop.first %}active{% endif %}" data-col="{{ col }}">{{ col_labels.get(col, col) }}</button>
+            {% endfor %}
+        </div>
+
+        {% for col in num_cols %}
+        <div class="top-panel {% if not loop.first %}panel-hidden{% endif %}" id="top-panel-{{ col }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h6 style="font-weight:700; color: var(--accent-green); margin-bottom:14px; font-size:15px;">🔺 Top 3 Cao nhất — {{ col_labels.get(col, col) }}</h6>
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        {% for item in top_bottom[col]['top3'] %}
+                        <div class="rank-card top">
+                            <span class="rank-medal">{{ loop.index }}</span>
+                            <div class="rank-name">{{ item.name }}</div>
+                            <div class="rank-brand">{{ item.brand }}</div>
+                            <div class="rank-value">
+                                {% if col == 'price' %}{{ "{:,.0f}".format(item[col]) }}₫
+                                {% elif col == 'weight' %}{{ item[col] }} kg
+                                {% elif col in ['ram', 'storage'] %}{{ item[col]|int }} GB
+                                {% elif col == 'screen_size' %}{{ item[col] }}"
+                                {% elif col == 'refresh_rate' %}{{ item[col]|int }} Hz
+                                {% elif col == 'battery' %}{{ item[col] }} Wh
+                                {% else %}{{ "{:,.0f}".format(item[col]) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <h6 style="font-weight:700; color: var(--accent-red); margin-bottom:14px; font-size:15px;">🔻 Top 3 Thấp nhất — {{ col_labels.get(col, col) }}</h6>
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        {% for item in top_bottom[col]['bottom3'] %}
+                        <div class="rank-card bottom">
+                            <span class="rank-medal">{{ loop.index }}</span>
+                            <div class="rank-name">{{ item.name }}</div>
+                            <div class="rank-brand">{{ item.brand }}</div>
+                            <div class="rank-value">
+                                {% if col == 'price' %}{{ "{:,.0f}".format(item[col]) }}₫
+                                {% elif col == 'weight' %}{{ item[col] }} kg
+                                {% elif col in ['ram', 'storage'] %}{{ item[col]|int }} GB
+                                {% elif col == 'screen_size' %}{{ item[col] }}"
+                                {% elif col == 'refresh_rate' %}{{ item[col]|int }} Hz
+                                {% elif col == 'battery' %}{{ item[col] }} Wh
+                                {% else %}{{ "{:,.0f}".format(item[col]) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- ======================== TAB 3 ======================== -->
+<style>
+    /* CSS Tối ưu UX/UI cho Tab Thống Kê */
+    .stats-toolbar { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; align-items: center; justify-content: space-between; background: #f8fafc; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .search-wrapper { position: relative; flex-grow: 1; min-width: 260px; max-width: 400px; }
+    .search-wrapper input { width: 100%; padding: 10px 16px 10px 40px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; transition: all 0.2s ease; box-sizing: border-box; }
+    .search-wrapper input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #94a3b8; pointer-events: none; }
+    .filter-select { padding: 10px 16px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; font-weight: 600; color: #334155; cursor: pointer; outline: none; background-color: #fff; min-width: 200px; }
+    .filter-select:focus { border-color: #3b82f6; }
+    
+    .stats-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .stats-table th { position: sticky; top: 0; background: #f1f5f9; padding: 14px 16px; font-weight: 600; color: #334155; border-bottom: 2px solid #cbd5e1; z-index: 10; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stats-table td { padding: 14px 16px; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px; transition: background-color 0.15s; }
+    .stats-table tbody tr:hover td { background-color: #f8fafc; }
+    
+    /* Phân biệt màu sắc cho các chỉ số để dễ đọc lướt */
+    .stat-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-weight: 600; font-family: monospace; font-size: 13px; }
+    .stat-badge.mean { background: #e0e7ff; color: #3730a3; }
+    .stat-badge.median { background: #dcfce3; color: #166534; }
+    .stat-badge.std { background: #fee2e2; color: #991b1b; }
+    .brand-pill { background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+</style>
+
+<div class="tab-panel" id="tab-stats">
+    <div class="dash-card" style="background: #ffffff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 24px;">
+        
+        <!-- Toolbar: Chứa Filter và Search -->
+        <div class="stats-toolbar">
+            <h3 style="margin: 0; color: #0f172a; font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                📊 Tổng hợp thông số
+            </h3>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; flex-grow: 1; justify-content: flex-end;">
+                <select id="statsBrandFilter" class="filter-select" aria-label="Lọc theo hãng">
+                    <option value="all">Tất cả các hãng</option>
+                    <option value="Toàn bộ">Thống kê toàn thị trường</option>
+                    {% for b in brands %}
+                    <option value="{{ b }}">{{ b }}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="statsSearch" class="search-box" placeholder="Tìm thông số (vd: price, ram...)" aria-label="Tìm kiếm">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng Dữ Liệu -->
+        <div class="table-responsive" style="max-height: 500px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <table class="stats-table" id="statsTable">
+                <thead>
+                    <tr>
+                        <th>Hãng Sản Xuất</th>
+                        <th>Thông Số (Feature)</th>
+                        <th>Trung bình (Mean)</th>
+                        <th>Trung vị (Median)</th>
+                        <th>Độ lệch chuẩn (Std)</th>
+                        <th style="text-align: center;">Số lượng mẫu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in stats %}
+                    <tr data-brand="{{ s.brand }}" data-feature="{{ s.feature }}">
+                        <td>
+                            {% if s.brand == 'Toàn bộ' %}
+                            <span class="brand-pill">{{ s.brand }}</span>
+                            {% else %}
+                            <span style="font-weight: 700; color: #1e293b;">{{ s.brand }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="font-weight: 600; color: #0f172a;">{{ col_labels.get(s.feature, s.feature) | title }}</td>
+                        <td><span class="stat-badge mean">{{ "{:,.2f}".format(s.mean) if s.mean is not none else 'N/A' }}</span></td>
+                        <td><span class="stat-badge median">{{ "{:,.2f}".format(s.median) if s.median is not none else 'N/A' }}</span></td>
+                        <td><span class="stat-badge std">{{ "{:,.2f}".format(s.std) if s.std is not none else 'N/A' }}</span></td>
+                        <td style="text-align: center; font-weight: 700; color: #64748b;">{{ s.count }}</td>
+                    </tr>
+                    {% endfor %}
+                    <!-- Hàng trống hiển thị khi search không có kết quả -->
+                    <tr id="noResultsRow" style="display: none;">
+                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: #64748b;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">😕</div>
+                            Không tìm thấy dữ liệu phù hợp với bộ lọc hiện tại.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("statsSearch");
+    const brandFilter = document.getElementById("statsBrandFilter");
+    const tableRows = document.querySelectorAll("#statsTable tbody tr:not(#noResultsRow)");
+    const noResultsRow = document.getElementById("noResultsRow");
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const selectedBrand = brandFilter.value;
+        let visibleCount = 0;
+
+        tableRows.forEach(row => {
+            const brand = row.getAttribute("data-brand");
+            const feature = row.getAttribute("data-feature").toLowerCase();
+            const featureLabel = row.cells[1].textContent.toLowerCase();
+
+            const matchesBrand = (selectedBrand === "all") || (brand === selectedBrand);
+            const matchesSearch = feature.includes(searchTerm) || featureLabel.includes(searchTerm);
+
+            if (matchesBrand && matchesSearch) {
+                row.style.display = "";
+                visibleCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        noResultsRow.style.display = visibleCount === 0 ? "" : "none";
+    }
+
+    searchInput.addEventListener("input", filterTable);
+    brandFilter.addEventListener("change", filterTable);
+});
+</script>
+<!-- ======================== TAB 4 ======================== -->
+<div class="tab-panel" id="tab-histogram">
+    <div class="dash-card">
+        <div class="pill-group" id="histPillGroup" style="margin-bottom: 20px;">
+            {% for col in num_cols %}
+            <button class="pill-btn {% if loop.first %}active{% endif %}" data-col="{{ col }}">{{ col_labels.get(col, col) }}</button>
+            {% endfor %}
+        </div>
+
+        {% for col in num_cols %}
+        <div class="hist-panel {% if not loop.first %}panel-hidden{% endif %}" id="hist-panel-{{ col }}">
+            <div class="hist-viewer">
+                <!-- HÀNG 1: BIỂU ĐỒ TOÀN THỊ TRƯỜNG + THẺ TÓM TẮT -->
+                <div class="hist-summary-row">
+                    <div class="hist-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
+                        <span class="hist-img-label">Toàn bộ thị trường</span>
+                        <span class="hist-zoom-hint">Nhấp để phóng to</span>
+                        <img src="{{ url_for('static', filename='charts/hist_overall_' + col + '.png') }}" alt="Histogram overall {{ col }}">
+                    </div>
+
+                    <!-- THẺ TÓM TẮT THỐNG KÊ -->
+                    <div class="hist-summary-stats">
+                        <div class="p-3 rounded-3 shadow-sm bg-white" style="border: 1px solid var(--border);">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="fw-bold text-dark small">Tóm tắt chỉ số: {{ col_labels.get(col, col) }}</span>
+                                {% if col in leaders %}
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle badge-pulse">
+                                    Hãng dẫn đầu: {{ leaders[col]['brand'] }}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            {% for s in stats if s.brand == 'Toàn bộ' and s.feature == col %}
+                            <div class="row g-2 text-center mb-3">
+                                <div class="col-4">
+                                    <div class="stat-mini-box mean">
+                                        <div class="text-muted" style="font-size: 11px; font-weight:600;">Trung bình (Mean)</div>
+                                        <div class="fw-bold text-primary mt-1" style="font-size: 13.5px;">
+                                            {% if col == 'price' %}{{ "{:,.0f}".format(s.mean) }}₫{% else %}{{ "{:,.2f}".format(s.mean) }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-mini-box median">
+                                        <div class="text-muted" style="font-size: 11px; font-weight:600;">Trung vị (Median)</div>
+                                        <div class="fw-bold text-success mt-1" style="font-size: 13.5px;">
+                                            {% if col == 'price' %}{{ "{:,.0f}".format(s.median) }}₫{% else %}{{ "{:,.2f}".format(s.median) }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="stat-mini-box std">
+                                        <div class="text-muted" style="font-size: 11px; font-weight:600;">Độ lệch chuẩn (Std)</div>
+                                        <div class="fw-bold mt-1" style="font-size: 13.5px; color:#d97706;">
+                                            {% if col == 'price' %}{{ "{:,.0f}".format(s.std) }}₫{% else %}{{ "{:,.2f}".format(s.std) }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            {% if col in top_bottom %}
+                            <div class="p-2 rounded-2 border small" style="background:#f8fafc;">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-success fw-bold">▲ Cao nhất:</span>
+                                    <span class="text-truncate ms-2" style="max-width: 320px;" title="{{ top_bottom[col]['top3'][0]['name'] }}">
+                                        <strong>{{ top_bottom[col]['top3'][0]['name'] }}</strong> 
+                                        ({% if col == 'price' %}{{ "{:,.0f}".format(top_bottom[col]['top3'][0][col]) }}₫{% else %}{{ top_bottom[col]['top3'][0][col] }}{% endif %})
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-danger fw-bold">▼ Thấp nhất:</span>
+                                    <span class="text-truncate ms-2" style="max-width: 320px;" title="{{ top_bottom[col]['bottom3'][0]['name'] }}">
+                                        <strong>{{ top_bottom[col]['bottom3'][0]['name'] }}</strong> 
+                                        ({% if col == 'price' %}{{ "{:,.0f}".format(top_bottom[col]['bottom3'][0][col]) }}₫{% else %}{{ top_bottom[col]['bottom3'][0][col] }}{% endif %})
+                                    </span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HÀNG 2: BIỂU ĐỒ THEO TỪNG HÃNG (toàn chiều ngang) -->
+                <div class="hist-img-wrap" onclick="openLightbox(this.querySelector('img').src)">
+                    <span class="hist-img-label">Phân bố Histogram theo từng hãng</span>
+                    <span class="hist-zoom-hint">Nhấp để phóng to</span>
+                    <img src="{{ url_for('static', filename='charts/hist_by_brand_' + col + '.png') }}" alt="Histogram by brand {{ col }}">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="Zoomed chart">
+</div>
+
+<!-- ============ SCRIPTS ============ -->
+<!-- DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
+(function() {
+    'use strict';
+
+    // ===== DataTables + Filter Pills (phần gốc) =====
+    var currentFilter = 'all';
+
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            if (currentFilter === 'all') return true;
+            var rowNode = settings.aoData[dataIndex].nTr;
+            if (!rowNode) return true;
+            var price = parseFloat($(rowNode).attr('data-price')) || 0;
+            var weight = parseFloat($(rowNode).attr('data-weight')) || 0;
+            var gpuScore = parseFloat($(rowNode).attr('data-gpu-score')) || 0;
+            var ram = parseFloat($(rowNode).attr('data-ram')) || 0;
+            var brand = ($(rowNode).attr('data-brand') || '').toLowerCase();
+            if (currentFilter === 'budget') return price <= 20000000;
+            if (currentFilter === 'light') return weight <= 1.5;
+            if (currentFilter === 'gaming') return gpuScore >= 7000;
+            if (currentFilter === 'ram16') return ram >= 16;
+            if (currentFilter === 'apple') return brand === 'apple';
+            return true;
+        }
+    );
+
     $(document).ready(function() {
-        var currentFilter = 'all';
-
-        // Đăng ký custom filter cho DataTables
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                if (currentFilter === 'all') return true;
-                
-                var rowNode = settings.aoData[dataIndex].nTr;
-                if (!rowNode) return true;
-
-                var price = parseFloat($(rowNode).attr('data-price')) || 0;
-                var weight = parseFloat($(rowNode).attr('data-weight')) || 0;
-                var gpuScore = parseFloat($(rowNode).attr('data-gpu-score')) || 0;
-                var ram = parseFloat($(rowNode).attr('data-ram')) || 0;
-                var brand = ($(rowNode).attr('data-brand') || '').toLowerCase();
-
-                if (currentFilter === 'budget') {
-                    return price <= 20000000;
-                } else if (currentFilter === 'light') {
-                    return weight <= 1.5;
-                } else if (currentFilter === 'gaming') {
-                    return gpuScore >= 7000;
-                } else if (currentFilter === 'ram16') {
-                    return ram >= 16;
-                } else if (currentFilter === 'apple') {
-                    return brand === 'apple';
-                }
-                return true;
-            }
-        );
-
         var table = $('#laptopsTable').DataTable({
             "pageLength": 15,
             "lengthMenu": [10, 15, 25, 50, 100],
             "language": {
                 "search": "🔍 Tìm kiếm:",
                 "lengthMenu": "Hiển thị _MENU_ laptop / trang",
-                "paginate": {
-                    "next": "Trang sau",
-                    "previous": "Trang trước"
-                },
+                "paginate": { "next": "Trang sau", "previous": "Trang trước" },
                 "info": "Đang hiển thị _START_ đến _END_ của tổng số _TOTAL_ laptop",
                 "infoEmpty": "Không tìm thấy dữ liệu",
                 "zeroRecords": "Không có laptop nào phù hợp"
             }
         });
 
-        // Xử lý sự kiện click filter pills
         $('.filter-pill').on('click', function() {
             $('.filter-pill').removeClass('btn-primary active').addClass('btn-outline-secondary bg-white');
             $(this).removeClass('btn-outline-secondary bg-white').addClass('btn-primary active');
@@ -155,6 +888,88 @@
             table.draw();
         });
     });
+
+    // ===== EDA Dashboard Tabs =====
+    var tabs = document.querySelectorAll('.dash-tab');
+    var panels = document.querySelectorAll('.tab-panel');
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            panels.forEach(function(p) { p.classList.remove('active'); });
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ===== Dynamic Progress Bars =====
+    document.querySelectorAll('.brand-progress-fill[data-progress]').forEach(function(el) {
+        el.style.width = el.getAttribute('data-progress') + '%';
+    });
+
+    // ===== Top 3 pills =====
+    var topPills = document.querySelectorAll('#topPillGroup .pill-btn');
+    var topPanels = document.querySelectorAll('.top-panel');
+    topPills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+            topPills.forEach(function(p) { p.classList.remove('active'); });
+            pill.classList.add('active');
+            topPanels.forEach(function(p) { p.classList.add('panel-hidden'); p.style.display = 'none'; });
+            var target = document.getElementById('top-panel-' + pill.dataset.col);
+            if (target) {
+                target.classList.remove('panel-hidden');
+                target.style.display = 'block';
+            }
+        });
+    });
+
+    // ===== Histogram pills =====
+    var histPills = document.querySelectorAll('#histPillGroup .pill-btn');
+    var histPanels = document.querySelectorAll('.hist-panel');
+    histPills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+            histPills.forEach(function(p) { p.classList.remove('active'); });
+            pill.classList.add('active');
+            histPanels.forEach(function(p) { p.classList.add('panel-hidden'); p.style.display = 'none'; });
+            var target = document.getElementById('hist-panel-' + pill.dataset.col);
+            if (target) {
+                target.classList.remove('panel-hidden');
+                target.style.display = 'block';
+            }
+        });
+    });
+
+    // ===== Stats table filtering =====
+    var brandFilter = document.getElementById('statsBrandFilter');
+    var searchBox = document.getElementById('statsSearch');
+    var statsRows = document.querySelectorAll('#statsTable tbody tr');
+
+    function filterStats() {
+        var brand = brandFilter.value;
+        var query = searchBox.value.toLowerCase().trim();
+        statsRows.forEach(function(row) {
+            var rowBrand = row.getAttribute('data-brand');
+            var rowFeature = row.getAttribute('data-feature');
+            var brandMatch = (brand === 'all') || (rowBrand === brand);
+            var searchMatch = !query || rowFeature.toLowerCase().indexOf(query) !== -1 || rowBrand.toLowerCase().indexOf(query) !== -1;
+            row.style.display = (brandMatch && searchMatch) ? '' : 'none';
+        });
+    }
+    brandFilter.addEventListener('change', filterStats);
+    searchBox.addEventListener('input', filterStats);
+
+})();
+
+// ===== Lightbox =====
+function openLightbox(src) {
+    var overlay = document.getElementById('lightboxOverlay');
+    document.getElementById('lightboxImg').src = src;
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+    document.getElementById('lightboxOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
 </script>
 {% endblock %}
-

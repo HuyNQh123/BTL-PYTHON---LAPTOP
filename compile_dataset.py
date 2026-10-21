@@ -175,8 +175,8 @@ def compile_dataset():
     df_sources = pd.DataFrame(sources_rows)
 
     os.makedirs('data', exist_ok=True)
-    df_laptops.to_csv('data/laptops.csv', index=False)
-    df_sources.to_csv('data/laptop_sources.csv', index=False)
+    df_laptops.to_csv('data/laptops.csv', index=False, encoding='utf-8-sig')
+    df_sources.to_csv('data/laptop_sources.csv', index=False, encoding='utf-8-sig')
 
     print(f"\n ĐÃ XUẤT THÀNH CÔNG:")
     print(f"- data/laptops.csv: {len(df_laptops)} mẫu laptop thực tế")
