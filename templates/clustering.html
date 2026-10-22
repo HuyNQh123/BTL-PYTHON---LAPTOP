@@ -5,14 +5,13 @@
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <span class="badge bg-primary px-3 py-2 mb-2">PHẦN 3: MACHINE LEARNING & GIẢM CHIỀU</span>
-                <h1 class="h3 fw-bold text-dark">Phân Nhóm Laptop Tự Động (K-Means) & PCA 2D</h1>
-                <p class="text-muted mb-0">Hệ thống áp dụng thuật toán học máy không giám sát K-Means Clustering kết hợp
-                    PCA để phân loại thị trường laptop thành các nhóm đặc trưng.</p>
+                <span class="badge bg-primary px-3 py-2 mb-2">SỰ LỰA CHỌN TỐI ƯU</span>
+                <h1 class="h3 fw-bold text-dark">Phân Nhóm Laptop Dựa Trên Nhu Cầu Sử Dụng Của Khách Hàng</h1>
+                <p class="text-muted mb-0">Dành cho những khách hàng còn đang phân vân với nhu cầu sử dụng của mình.</p>
             </div>
             <div class="d-flex gap-2">
                 <a href="/radar" class="btn btn-outline-danger">
-                    🕸️ So sánh Radar Chart
+                    🕸️ So Sánh Chi Tiết
                 </a>
                 <a href="/laptops" class="btn btn-outline-primary">
                     📋 Xem Kho Dữ Liệu
@@ -84,18 +83,25 @@
     <div class="col-lg-7">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white py-3 border-bottom">
-                <h5 class="card-title fw-bold mb-0 text-primary">Biểu Đồ Phân Bố Cụm 2D (PCA Projection)</h5>
-                <small class="text-muted">Nén 9 đặc trưng kỹ thuật xuống 2 thành phần chính (PC1 & PC2) để trực quan hóa
-                    không gian đa chiều.</small>
+                <h5 class="card-title fw-bold mb-0 text-primary">Biểu Đồ Phân Bố Các Cụm Máy Tính Trên Thị Trường (PCA).
+                </h5>
+                <small class="text-muted">Biểu đồ 2D thể hiện sự phân hóa rõ nét giữa các dòng máy tính.</small>
             </div>
             <div class="card-body text-center p-3">
                 <img src="{{ url_for('static', filename='images/pca_clusters.png') }}?v={{ cache_id }}"
                     alt="Biểu đồ phân cụm PCA 2D" class="img-fluid rounded border shadow-sm">
             </div>
-            <div class="card-footer bg-light small text-muted">
-                <strong>Ý nghĩa kỹ thuật:</strong> Trục hoành PC1 thể hiện sức mạnh cấu hình và tầm giá (chiếm >60%
-                phương sai). Trục tung PC2 thể hiện tính di động và kích thước màn hình. Các dấu X màu đen là tâm cụm
-                (Centroids).
+            <div class="card-footer bg-light p-3 small text-muted">
+                <div class="fw-bold text-dark mb-1">Cách đọc nhanh các trục tọa độ:</div>
+                <div class="mb-1">
+                    <strong class="text-dark">Trục ngang:</strong> Lệch sang Trái là laptop cấu hình cơ bản, giá rẻ bình
+                    dân;
+                    lệch sang Phải là laptop cấu hình rất mạnh, đồ họa cao và giá đắt.
+                </div>
+                <div>
+                    <strong class="text-dark">Trục dọc:</strong> Ở phía Dưới là thân máy dày, màn hình lớn và nặng hơn;
+                    ở phía Trên là máy thiết kế mỏng nhẹ, màn hình nhỏ gọn và pin lâu.
+                </div>
             </div>
         </div>
     </div>
@@ -111,10 +117,104 @@
                 <img src="{{ url_for('static', filename='images/elbow_silhouette_analysis.png') }}?v={{ cache_id }}"
                     alt="Phương pháp Elbow và Silhouette Score" class="img-fluid rounded border shadow-sm">
             </div>
-            <div class="card-footer bg-light small text-muted">
-                <strong>Ý nghĩa kỹ thuật:</strong> Đồ thị bên trái biểu diễn Inertia giảm dần; đồ thị bên phải chỉ ra
-                Silhouette Score cao nhất tại k tối ưu, chứng minh các nhóm phân cụm có độ gắn kết cao và tách biệt tốt
-                nhất.
+            <div class="card-footer bg-light p-3 small text-muted">
+                <div class="fw-bold text-dark mb-1">Cách đọc đồ thị chọn số nhóm k:</div>
+                <div class="mb-1">
+                    <strong class="text-dark">Đồ thị bên trái:</strong> Đoạn dốc gập mạnh nhất tại mốc số 3, chứng minh
+                    chia làm 3 nhóm giúp gom cụm gọn gàng nhất.
+                </div>
+                <div>
+                    <strong class="text-dark">Đồ thị bên phải:</strong> Điểm số phân tách cao tại mốc số 3, chứng minh 3
+                    nhóm máy có ranh giới rõ ràng, không bị chồng lấn.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KHỐI HƯỚNG DẪN CHI TIẾT THEO NGÔN NGỮ TỰ NHIÊN DÀNH CHO MỌI NGƯỜI (KHÔNG DÙNG ICON) -->
+<div class="card border-0 shadow-sm mb-5 bg-white border-start border-4 border-primary">
+    <div class="card-body p-4">
+        <div class="mb-3">
+            <h5 class="fw-bold text-dark mb-1">Hướng Dẫn Chi Tiết Cách Đọc Biểu Đồ. </h5>
+            <small class="text-muted">Dành cho mọi người xem đều có thể dễ dàng hiểu được ý nghĩa các trục tọa độ và màu
+                sắc trên biểu đồ.</small>
+        </div>
+
+        <div class="row g-4">
+            <!-- Cột 1: Hướng dẫn đọc trục ngang và trục dọc -->
+            <div class="col-md-6 border-end-md">
+                <div class="bg-light p-3 rounded h-100">
+                    <h6 class="fw-bold text-primary mb-3">1. Quy luật đọc vị trí theo Trục ngang và Trục dọc:</h6>
+
+                    <div class="small mb-3">
+                        <div class="fw-bold text-dark mb-1">Đối với Trục ngang (Thước đo sức mạnh cấu hình và mức giá):
+                        </div>
+                        <div class="text-muted ps-2 border-start border-2 border-primary mb-2">
+                            - Lệch sang TRÁI: Đại diện cho các dòng laptop có cấu hình cơ bản, sử dụng card đồ họa tích
+                            hợp onboard, phục vụ tốt cho nhu cầu học tập và tin học văn phòng thông thường, mức giá bán
+                            rẻ và bình dân từ 8 triệu đến dưới 20 triệu đồng.
+                        </div>
+                        <div class="text-muted ps-2 border-start border-2 border-primary">
+                            - Lệch sang PHẢI: Đại diện cho các dòng laptop có cấu hình phần cứng rất mạnh mẽ với CPU
+                            nhiều nhân, card đồ họa rời hiệu năng cao, dung lượng RAM lớn, phục vụ chơi game nặng và làm
+                            đồ họa chuyên nghiệp, mức giá thành đắt đỏ từ 30 triệu đến trên 100 triệu đồng.
+                        </div>
+                    </div>
+
+                    <div class="small">
+                        <div class="fw-bold text-dark mb-1">Đối với Trục dọc (Thước đo kích thước và độ mỏng nhẹ):</div>
+                        <div class="text-muted ps-2 border-start border-2 border-success mb-2">
+                            - Ở phía DƯỚI: Đại diện cho các dòng máy có thân máy dày, kích thước màn hình lớn từ 15.6
+                            đến 16 inch và trọng lượng nặng hơn từ 2.0 kg đến 2.6 kg trở lên do phải chứa bộ quạt tản
+                            nhiệt lớn để làm mát linh kiện khi hoạt động nặng.
+                        </div>
+                        <div class="text-muted ps-2 border-start border-2 border-success">
+                            - Ở phía TRÊN: Đại diện cho các dòng máy được thiết kế theo xu hướng siêu mỏng nhẹ, kích
+                            thước màn hình nhỏ gọn từ 13.3 đến 14.0 inch, trọng lượng nhẹ chỉ từ 1.0 kg đến 1.3 kg, thời
+                            lượng pin lâu dài và tính cơ động rất cao.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột 2: Ý nghĩa màu sắc và lý do chọn 3 nhóm -->
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded h-100">
+                    <h6 class="fw-bold text-success mb-3">2. Ý nghĩa các màu sắc và lý do phân thành 3 nhóm máy:</h6>
+
+                    <div class="small mb-3">
+                        <div class="fw-bold text-dark mb-1">Ý nghĩa các nhóm màu sắc trên biểu đồ:</div>
+                        <div class="text-muted ps-2 border-start border-2 border-secondary mb-1">
+                            - Cụm Màu Xanh Dương (nằm lệch về phía bên trái): Nhóm Laptop Văn phòng và Học tập đa nhiệm.
+                        </div>
+                        <div class="text-muted ps-2 border-start border-2 border-secondary mb-1">
+                            - Cụm Màu Cam (nằm ở giữa và hơi lệch xuống phía dưới): Nhóm Laptop Gaming và Đồ họa tầm
+                            trung.
+                        </div>
+                        <div class="text-muted ps-2 border-start border-2 border-secondary mb-1">
+                            - Cụm Màu Xanh Lá (nằm riêng biệt ở góc bên phải): Nhóm Laptop Gaming Flagship và Máy trạm
+                            cao cấp.
+                        </div>
+                        <div class="text-muted ps-2 border-start border-2 border-secondary">
+                            - Dấu chữ X màu đen: Vị trí trung tâm đại diện cho thông số cấu hình trung bình của từng
+                            nhóm máy.
+                        </div>
+                    </div>
+
+                    <div class="small text-muted p-3 bg-white rounded border">
+                        <div class="fw-bold text-dark mb-1">Lý do chọn chia thành 3 nhóm máy:</div>
+                        <div>
+                            - Nếu chỉ chia 2 nhóm: Quá thô sơ, khiến chiếc máy văn phòng 10 triệu đồng bị gộp chung với
+                            chiếc máy chơi game 30 triệu đồng.
+                            <br>- Nếu chia 4 hoặc 5 nhóm: Thị trường bị chia cắt vụn vặt, người xem bị rối mắt và các
+                            nhóm bị trùng lặp.
+                            <br>- Chia làm 3 nhóm (k = 3): Đạt tỷ lệ cân bằng tối ưu, tương ứng chính xác với 3 phân
+                            khúc nhu cầu thực tế trên thị trường: Máy văn phòng giá mềm, Máy chơi game vừa tiền, và Máy
+                            cấu hình cao đắt tiền.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -204,7 +304,7 @@
         </table>
     </div>
     <div class="card-footer bg-light text-muted small d-flex justify-content-between align-items-center py-2">
-        <span>Hiển thị toàn bộ dữ liệu từ file <code>results_clustered.csv</code></span>
+
         <span id="rowCountDisplay" class="fw-bold">225 / 225 laptop</span>
     </div>
 </div>
@@ -288,7 +388,7 @@
             <div class="modal-footer bg-white py-2 d-flex justify-content-between">
                 <span class="text-muted small">
                     💡 Mẹo: Bạn có thể chọn tên laptop bất kỳ trong bảng này và mang sang trang
-                    <a href="/radar" class="fw-bold text-danger">So sánh Radar Chart</a> để phân tích chi tiết.
+                    <a href="/radar" class="fw-bold text-danger">So Sánh Chi Tiết</a> để phân tích chi tiết.
                 </span>
                 <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Đóng</button>
             </div>
