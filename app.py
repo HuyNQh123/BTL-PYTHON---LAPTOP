@@ -176,25 +176,49 @@ def laptops():
     if df_raw is not None:
         df_clean = clean_data(df_raw)
         laptops_data = df_clean.to_dict(orient='records')
-        (
-            top_bottom, stats, leaders, evaluation, brands,
-            best_value_laptops
-        ) = compute_eda(df_clean)
     else:
         laptops_data = []
-        top_bottom, stats, leaders, evaluation, brands = {}, [], {}, {}, []
-        best_value_laptops = []
 
-    return render_template('laptops.html',
+    return render_template('laptops.html', laptops=laptops_data)
+
+
+@app.route('/stats')
+def stats():
+    df_raw = load_data('data/laptops.csv')
+    if df_raw is not None:
+        df_clean = clean_data(df_raw)
+        laptops_data = df_clean.to_dict(orient='records')
+        (
+            top_bottom, stats_data, leaders, evaluation, brands,
+            best_value_laptops
+        ) = compute_eda(df_clean)
+
+        # Top 5 máy bán chạy nhất dựa trên units_sold
+        if 'units_sold' in df_clean.columns:
+            top_selling = (
+                df_clean.dropna(subset=['units_sold'])
+                .nlargest(5, 'units_sold')[['name', 'brand', 'price', 'cpu', 'ram', 'units_sold', 'rating']]
+                .to_dict(orient='records')
+            )
+        else:
+            top_selling = []
+    else:
+        laptops_data = []
+        top_bottom, stats_data, leaders, evaluation, brands = {}, [], {}, {}, []
+        best_value_laptops = []
+        top_selling = []
+
+    return render_template('stats.html',
                            laptops=laptops_data,
                            top_bottom=top_bottom,
-                           stats=stats,
+                           stats=stats_data,
                            leaders=leaders,
                            evaluation=evaluation,
                            num_cols=NUM_COLS,
                            col_labels=COL_LABELS,
                            brands=brands,
-                           best_value_laptops=best_value_laptops)
+                           best_value_laptops=best_value_laptops,
+                           top_selling=top_selling)
 
 
 @app.route('/download/results')

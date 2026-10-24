@@ -166,3 +166,74 @@ for col in num_cols:
     col_stat = brand_only_df[brand_only_df['feature'] == col].dropna(subset=['mean'])
     top_brand = col_stat.loc[col_stat['mean'].idxmax()]
     print(f"- {col}: {top_brand['brand']} (Mean: {top_brand['mean']:.2f}, Median: {top_brand['median']:.2f})")
+#phân tich ánh giá sự ảnh hưởng trực tiếp của cấu hình phần cứng lên mức giá bán của sản phẩm.
+# --- 6. Biểu đồ phân tích ảnh hưởng phần cứng lên giá bán (2x2 Subplots) ---
+print("\n[V] Đang vẽ biểu đồ ảnh hưởng phần cứng lên giá bán...")
+from matplotlib.ticker import FuncFormatter
+
+# Chuẩn bị dữ liệu
+hw_df = df[['price', 'cpu_score', 'gpu_score', 'ram']].copy()
+for c in hw_df.columns:
+    hw_df[c] = pd.to_numeric(hw_df[c], errors='coerce')
+hw_df = hw_df.dropna()
+
+# Hàm format trục Y hiển thị triệu VNĐ thay vì ký hiệu khoa học
+def vnd_formatter(x, pos):
+    return f'{x / 1e6:.0f}M'
+
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+fig.suptitle('Phân tích ảnh hưởng phần cứng lên giá bán Laptop',
+             fontsize=16, fontweight='bold', y=0.98)
+
+# --- Biểu đồ 1: Scatter CPU Score vs Price (màu tím) ---
+ax1 = axes[0, 0]
+ax1.scatter(hw_df['cpu_score'], hw_df['price'],
+            color='purple', alpha=0.6, edgecolors='black', linewidth=0.5, s=50)
+ax1.set_title('CPU Score vs Price', fontsize=13, fontweight='bold', pad=10)
+ax1.set_xlabel('Điểm hiệu năng CPU (điểm)', fontsize=11, fontweight='600')
+ax1.set_ylabel('Giá bán (triệu VNĐ)', fontsize=11, fontweight='600')
+ax1.yaxis.set_major_formatter(FuncFormatter(vnd_formatter))
+ax1.grid(True, linestyle='--', alpha=0.4)
+
+# --- Biểu đồ 2: Scatter GPU Score vs Price (màu xanh lá) ---
+ax2 = axes[0, 1]
+ax2.scatter(hw_df['gpu_score'], hw_df['price'],
+            color='green', alpha=0.6, edgecolors='black', linewidth=0.5, s=50)
+ax2.set_title('GPU Score vs Price', fontsize=13, fontweight='bold', pad=10)
+ax2.set_xlabel('Điểm hiệu năng GPU (điểm)', fontsize=11, fontweight='600')
+ax2.set_ylabel('Giá bán (triệu VNĐ)', fontsize=11, fontweight='600')
+ax2.yaxis.set_major_formatter(FuncFormatter(vnd_formatter))
+ax2.grid(True, linestyle='--', alpha=0.4)
+
+# --- Biểu đồ 3: Box plot Price theo RAM (viền đen, nền trắng nhạt) ---
+ax3 = axes[1, 0]
+ram_order = sorted(hw_df['ram'].unique())
+sns.boxplot(data=hw_df, x='ram', y='price', order=ram_order, ax=ax3,
+            boxprops=dict(edgecolor='black', facecolor='#f8f8f8'),
+            medianprops=dict(color='#dc2626', linewidth=2),
+            whiskerprops=dict(color='black'),
+            capprops=dict(color='black'),
+            flierprops=dict(marker='o', markerfacecolor='gray', markersize=4, alpha=0.5))
+ax3.set_title('Price Distribution by RAM', fontsize=13, fontweight='bold', pad=10)
+ax3.set_xlabel('Dung lượng RAM (GB)', fontsize=11, fontweight='600')
+ax3.set_ylabel('Giá bán (triệu VNĐ)', fontsize=11, fontweight='600')
+ax3.yaxis.set_major_formatter(FuncFormatter(vnd_formatter))
+ax3.grid(axis='y', linestyle='--', alpha=0.4)
+
+# --- Biểu đồ 4: Heatmap tương quan phần cứng & giá ---
+ax4 = axes[1, 1]
+corr_cols = ['price', 'cpu_score', 'gpu_score', 'ram']
+corr_labels = ['Price', 'CPU Score', 'GPU Score', 'RAM']
+corr_matrix = hw_df[corr_cols].corr()
+sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', center=0,
+            xticklabels=corr_labels, yticklabels=corr_labels,
+            linewidths=0.8, linecolor='white', ax=ax4,
+            annot_kws={'fontsize': 11, 'fontweight': 'bold'})
+ax4.set_title('Correlation Heatmap (Hardware vs Price)', fontsize=13, fontweight='bold', pad=10)
+
+plt.tight_layout(rect=[0, 0, 1, 0.95])
+plt.savefig('charts/hardware_vs_price_analysis.png', dpi=150, bbox_inches='tight')
+plt.savefig('static/charts/hardware_vs_price_analysis.png', dpi=150, bbox_inches='tight')
+plt.close()
+
+print("[V] Đã lưu biểu đồ: charts/hardware_vs_price_analysis.png")
